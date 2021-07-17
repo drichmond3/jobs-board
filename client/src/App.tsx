@@ -15,10 +15,11 @@ var scroller = Scroll.scroller;
 const MAX_HOME_CATEGORIES = 5;
 
 function App() {
+  //TODO Extract state into a context.
   let [category, setCategory] = useState<Category | null>(null);
   let { data: categories, error: loadCategoriesError } = useLoadCategories();
   let { data: positionTypes, error: loadPositionsError } = useLoadPositionTypes();
-  let { data: jobPostings, error: loadJobPostingsError } = useLoadJobPostings(1, 10);
+  let { data: jobPostings, error: loadJobPostingsError } = useLoadJobPostings(1, 12);
 
   const scrollToJobBoard = () => {
     scroller.scrollTo('jobBoardScrollElement', {
@@ -56,14 +57,13 @@ function App() {
 const renderErrors = (errors: (Error | null)[]) => {
   return errors.map((error: Error | null, id: number) => {
     if (error == null) {
-      return <></>
+      return null;
     }
-
     const message = error.message ? error.message : "Unexpected Error";
     return (
       <Alert key={id} variant="danger">{message}</Alert>
     )
-  })
+  }).filter(error => Boolean(error))
 }
 
 export default App;
