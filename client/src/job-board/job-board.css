@@ -1,0 +1,27 @@
+.job-board-container{
+  height: 100%;
+  width: 80%;
+  margin:auto;
+}
+
+.job-board-header{
+  height:8rem;
+  max-height: 100px;
+  width: 100%;
+  border-bottom: 1px solid #545454 ;
+}
+
+.job-board-header *{
+  margin: auto;
+  height: 100%;
+  text-align: center;
+}
+
+.job-board-header img{
+  height: 100%;
+  display: inline-block;
+}
+
+.job-board-header h1{
+  display:inline-block;
+}

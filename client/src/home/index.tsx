@@ -1,12 +1,12 @@
 import React from "react";
 import { Button } from "react-bootstrap";
 
-import { Category } from "./JobTypes";
+import { Category } from "../service/JobTypes";
 import "./home.css";
 
 interface Props {
   categories: Category[],
-  changeCategory: (category: Category) => void
+  changeCategory: (category: Category | null) => void
 }
 
 export default function Home(props: Props) {
@@ -20,7 +20,7 @@ export default function Home(props: Props) {
         </div>
       </header>
       <div>
-        <button>Start</button>
+        <button onClick={() => props.changeCategory(null)}>Start</button>
       </div>
       <div className="home-category-container">
         {props.categories.map((category, index) => renderCategory(index, category, props.changeCategory))}
