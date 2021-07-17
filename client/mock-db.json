@@ -16,8 +16,8 @@
   "job_categories": [
     {
       "id": 1,
-      "name": "Information Technology",
-      "popularity": 1000
+      "name": "I.T.",
+      "popularity": 800
     },
     {
       "id": 2,
