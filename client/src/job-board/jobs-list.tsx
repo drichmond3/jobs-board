@@ -12,14 +12,14 @@ export default function JobsList(props: Props) {
   let jobs = props.jobs ? props.jobs : [];
   return (
     <div className="jobs-list-container">
-      {jobs.map((job, index) => renderJob(job))}
+      {jobs.map((job, index) => renderJob(job, index))}
     </div>
   );
 }
 
-let renderJob = (job: JobPosting): ReactElement => {
+let renderJob = (job: JobPosting, key: number): ReactElement => {
   return (
-    <SyntheticButton hoverClass="bg-light" clickClass="jobs-bg-clicked">
+    <SyntheticButton key={key} hoverClass="bg-light" clickClass="jobs-bg-clicked">
       <Card className="jobs-list-item">
         <img src={"/uploads/" + job.logo_file_name} alt={`Company ${job.company}`}></img>
         <div className="jobs-list-item-primary">
@@ -27,9 +27,9 @@ let renderJob = (job: JobPosting): ReactElement => {
           <span className="sub-data">{job.company}</span>
           <span className="sub-data">{getDisplayAge(job.age_in_hours)}</span>
         </div>
-        <div>
+        <div className="d-none d-md-block">
           <span className="sub-data">{job.job_position_types.name}</span>
-          <Button variant="primary">View</Button>
+          <Button variant="primary" className="d-none d-lg-block">View</Button>
         </div>
       </Card>
     </SyntheticButton>

@@ -16,27 +16,35 @@ const MAX_HOME_CATEGORIES = 5;
 
 function App() {
   //TODO Extract state into a context.
-  let [category, setCategory] = useState<Category | null>(null);
+  let [selectedCategories, setSelectedCategories] = useState<Category[] | null>(null);
   let { data: categories, error: loadCategoriesError } = useLoadCategories();
   let { data: positionTypes, error: loadPositionsError } = useLoadPositionTypes();
-  let { data: jobPostings, error: loadJobPostingsError } = useLoadJobPostings(1, 12);
+  let { data: jobPostings, error: loadJobPostingsError, headers: jobPostingsHeader } = useLoadJobPostings(1, 12);
 
   const scrollToElementId = (elementId: string) => {
     scroller.scrollTo(elementId, {
       duration: 500,
       smooth: true,
     });
-
   }
 
-  const setCategoryAndScroll = (cat: Category | null) => {
-    setCategory(cat);
+  const addCategoryAndScroll = (cat: Category | null) => {
+    if (cat === null) {
+      setSelectedCategories(null);
+    }
+    else {
+      let updatedSelectedCategories = selectedCategories == null ? [cat] : [...selectedCategories, cat];
+      setSelectedCategories(updatedSelectedCategories);
+    }
     scrollToElementId("jobBoardScrollElement");
   }
 
   const scrollToTop = () => scrollToElementId("appPageScrollElement");
 
   categories = categories == null ? Array(MAX_HOME_CATEGORIES).fill(null) : categories;
+
+  let searchResultCount = jobPostingsHeader?.get("X-Total-Count") || 0;
+  searchResultCount = Number.parseInt(searchResultCount + "");
 
   let errors = [loadCategoriesError];
   return (
@@ -45,12 +53,12 @@ function App() {
       <main>
         <Element name="appPageScrollElement">
           <div className="app-page">
-            <Home categories={categories.slice(0, MAX_HOME_CATEGORIES)} changeCategory={setCategoryAndScroll} />
+            <Home categories={categories.slice(0, MAX_HOME_CATEGORIES)} changeCategory={addCategoryAndScroll} />
           </div>
         </Element>
         <Element name="jobBoardScrollElement">
           <div className="app-page">
-            <JobBoard categories={categories} jobs={jobPostings} positionTypes={positionTypes} back={scrollToTop} />
+            <JobBoard categories={categories} jobs={jobPostings} positionTypes={positionTypes} back={scrollToTop} resultCount={searchResultCount} selectedCategories={selectedCategories} />
           </div>
         </Element>
       </main >

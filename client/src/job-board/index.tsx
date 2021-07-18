@@ -9,6 +9,8 @@ interface Props {
   categories: Category[] | null,
   jobs: JobPosting[] | null,
   positionTypes: PositionType[] | null,
+  resultCount: number,
+  selectedCategories: Category[] | null,
   back: () => void
 }
 
@@ -27,7 +29,7 @@ const renderHeader = (onClick: () => void) => {
   return (
     <div className="job-board-header">
       <div>
-        <img src={Logo} alt="mock jobs board logo" onClick={onClick} />
+        <img src={Logo} alt="mock jobs board logo" className="d-none d-sm-inline" onClick={onClick} />
         <div className="job-board-header-text" onClick={onClick}>
           <h1>Mock Jobs Board</h1>
         </div>
