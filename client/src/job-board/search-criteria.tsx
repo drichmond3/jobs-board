@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faChevronDown, faTimes } from '@fortawesome/free-solid-svg-icons'
 
 import { Category, PositionType } from "../service/JobTypes";
+import { isNull } from "util";
 
 interface Props {
   categories: Category[] | null,
@@ -18,15 +19,17 @@ export default function SearchCriteria(props: Props) {
       <div className="job-board-search-content">
         <Card border="dark">
           <form className="text-center pt-3 pb-3" onSubmit={(e) => e.preventDefault()}>
-            <Container className="p-0">
+            <Container fluid>
               <Row>
-                <Col lg={12} xs={12}>
+                <Col lg={12} xs={12} className="p-0">
                   <FontAwesomeIcon icon={faSearch} className="search-icon" />
                   <input placeholder="Search..."></input>
-                  <div className="search-info d-none d-md-block">{props.resultCount} results</div>
+                  <div className="search-info d-none d-sm-block">
+                    <div>{props.resultCount} results</div>
+                  </div>
                 </Col>
                 <Col lg={12} xs={6} id="job-board-category-dropdown">
-                  {renderDropdown("Categories", props.categories)}
+                  {renderDropdown("Categories", props.categories, props.selectedCategories)}
                   {renderSelectedItems(props.selectedCategories)}
                 </Col>
                 <Col lg={12} xs={6} id="job-board-tag-dropdown">
@@ -46,7 +49,7 @@ const renderSelectedItems = (dataList: Category[] | null): JSX.Element[] => {
     return (
       dataList.map(data => {
         return (
-          <Card key={data.id} className="d-none d-md-block job-board-search-selections">
+          <Card key={data.id} className="d-none d-lg-inline job-board-search-selections">
             <span><FontAwesomeIcon icon={faTimes} /></span>
             <span className="content">{data.name}</span>
           </Card>
@@ -61,7 +64,7 @@ const renderSelectedItems = (dataList: Category[] | null): JSX.Element[] => {
   }
 }
 
-const renderDropdown = (name: string, dataList: Category[] | PositionType[] | null): JSX.Element => {
+const renderDropdown = (name: string, dataList: Category[] | PositionType[] | null, selectedData?: Category[] | PositionType[] | null): JSX.Element => {
 
   if (dataList && dataList.find(data => data)) {
     return (
@@ -71,7 +74,7 @@ const renderDropdown = (name: string, dataList: Category[] | PositionType[] | nu
           <span> {name}</span>
         </Dropdown.Toggle>
         <Dropdown.Menu>
-          {dataList.filter(data => data).map((data) => renderDropdownItem(data))}
+          {dataList.filter(data => data).map((data) => renderDropdownItem(data, selectedData))}
         </Dropdown.Menu>
       </Dropdown>
     );
@@ -88,8 +91,12 @@ const renderDropdown = (name: string, dataList: Category[] | PositionType[] | nu
   }
 }
 
-const renderDropdownItem = (category: Category | PositionType): JSX.Element => {
+const renderDropdownItem = (category: Category | PositionType, selectedItems: Category[] | PositionType[] | null | undefined): JSX.Element => {
+  let selected: boolean = false;
+  if (selectedItems) {
+    selected = Boolean(selectedItems.find(item => item.id === category.id));
+  }
   return (
-    <Dropdown.Item key={category.id}>{category.name}</Dropdown.Item>
+    <Dropdown.Item active={selected} key={category.id}>{selected && <FontAwesomeIcon icon={faTimes} />} {category.name}</Dropdown.Item>
   )
 }

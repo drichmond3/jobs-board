@@ -13,6 +13,35 @@
   color: white;
 }
 
+@media (max-width: 992px){
+  .home-container .home-header{
+    height: 100%;
+  }
+
+  .home-container .home-header + div button{
+    top: -6rem;
+  }
+
+  .home-container .home-category-container{
+    height: 0px;
+    display:none;
+    z-index:-1;
+    pointer-events: none;
+  }
+
+  .home-container .home-header h1{
+    font-size: 3rem;
+  }
+
+  .home-container .home-header div{
+    right: 0px;
+  }
+  
+  .home-container .home-header p{
+    font-size:1.2rem;
+  }
+}
+
 .home-header div{
   position: relative;
   text-align: center;
@@ -31,6 +60,10 @@
   position: absolute;
   width: 100%;
 
+}
+
+.home-header + div{
+  height:0px;
 }
 
 .home-header + div button{

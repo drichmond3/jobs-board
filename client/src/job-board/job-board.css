@@ -1,224 +1,269 @@
-@media (min-width: 576px){
-  .d-sm-inline{
-    display:inline-block;
-  }
+.job-board-container {
+    height: 100%;
+    width: 80vw;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
 }
 
-.job-board-container{
-  height: 100%;
-  width: 80vw;
-  margin:auto;
-  display: flex;
-  flex-direction:column;
+.job-board-header {
+    height: 8rem;
+    max-height: 100px;
+    width: 100%;
+    border-bottom: 1px solid #545454;
 }
 
-.job-board-header{
-  height:8rem;
-  max-height: 100px;
-  width: 100%;
-  border-bottom: 1px solid #545454 ;
+.job-board-header>div {
+    margin: auto;
+    height: 100%;
+    text-align: left;
+    padding-left: 60px;
+    display: flex;
 }
 
-.job-board-header > div{
-  margin: auto;
-  height: 100%;
-  text-align: left;
-  padding-left: 60px;
-  display:flex;
+.job-board-header img {
+    height: 100%;
+    display: inline-block;
+    cursor: pointer;
 }
 
-.job-board-header img{
-  height: 100%;
-  display: inline-block;
-  cursor:pointer;
+.job-board-header-text {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-left: 20px;
+    cursor: pointer;
 }
 
-.job-board-header-text{
-  height: 100%;
-  display: flex;
-  flex-direction: column;  
-  padding-left: 20px;
-  cursor:pointer;
+.job-board-header-text>* {
+    margin: auto;
 }
 
-.job-board-header-text > *{
-  margin-top: auto;
+.job-board-content {
+    flex: 1;
+    margin-bottom: 10px;
+    margin-top: 30px;
+    overflow-y: auto;
 }
 
-.job-board-content{
-  flex: 1;
-  margin-bottom:10px;
-  margin-top: 30px;
-  overflow-y: auto;
+.jobs-list-item {
+    display: flex;
+    flex-direction: row;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    cursor: pointer;
 }
 
+.jobs-bg-clicked {
+    background-color: #e9e9e9;
+}
 
+.jobs-list-item>.jobs-list-item-primary {
+    flex: 1;
+    padding-left: 30px;
+}
 
-@media (max-width: 991px){
-  .jobs-list-container{
-    margin-top:9rem; /*Space for search bar.*/
-  }
-  .job-board-content::-webkit-scrollbar {
+.jobs-list-item>.jobs-list-item-primary+div {
+    padding-right: 10px;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.jobs-list-item img {
+    height: 80px;
+    border-radius: 50%;
+    border: 2px solid #333333;
+}
+
+.jobs-list-item .title {
+    display: block;
+    font-size: 1.25em;
+    font-weight: bold;
+}
+
+.jobs-list-item .sub-data {
+    display: block;
+    color: #545454;
+    font-size: 1em;
+}
+
+.job-board-details-content {
+    position: absolute;
+}
+
+.job-board-search-content {
+    position: absolute;
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 80vw;
+    height: auto;
+    z-index: 1;
+}
+
+.job-board-search-content>* {
+    width: 100%;
+    height: 100%;
+}
+
+.job-board-search-content input {
+    position: relative;
+    width: 100%;
+    left: 20px;
+    /*re-center by offsetting by the size of the icon*/
+    padding-left: 40px;
+    font-size: 1.1rem;
+}
+
+.search-icon {
+    font-size: 20px;
+    z-index: 1;
+    position: relative;
+    left: 50px;
+    margin-left: -50px;
+    /*move inside searchbar*/
+}
+
+.job-board-search-content .search-info>div {
+    font-size: .8rem;
+    color: #545454;
+    pointer-events: none
+}
+
+#job-board-category-dropdown {
+    margin-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #444444;
+}
+
+#job-board-tag-dropdown {
+    margin-top: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #444444;
+}
+
+#job-board-search-container .dropdown-toggle {
+    background-color: transparent;
+    color: #111111;
+    border: none;
+    box-shadow: none;
+    font-size: 1.0rem;
+    width: 85%;
+    text-align: left;
+}
+
+#job-board-search-container .dropdown-menu {
+    margin-left: -1rem !important;
+    /*gotta overwrite that inline bootstrap style somehow...*/
+    width: 100%;
+}
+
+#job-board-search-container .dropdown-toggle::after {
     display: none;
-  }
-  
-  /* Hide scrollbar for IE, Edge and Firefox */
-  .job-board-content {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-  }
 }
 
-.jobs-list-item{
-  display: flex;
-  flex-direction: row;
-  margin-top:3px;
-  margin-bottom:3px;
-  cursor:pointer;
+.job-board-search-selections {
+    display: inline-block;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
-.jobs-bg-clicked{
-  background-color:#e9e9e9;
+.job-board-search-selections svg {
+    cursor: pointer;
 }
 
-.jobs-list-item > .jobs-list-item-primary{
-  flex:1;
-  padding-left: 30px;
+.job-board-search-selections .content {
+    padding-left: 5px;
 }
 
-.jobs-list-item > .jobs-list-item-primary + div{
-  padding-right: 10px;
-  text-align:right;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+@media (min-width: 576px) and (max-width: 991px) {
+    .d-sm-inline {
+        display: inline-block !important;
+    }
+    .job-board-search-content input {
+        padding-right: 6rem;
+    }
 }
 
-.jobs-list-item img{
-  height: 80px;
-  border-radius: 50%;
-  border: 2px solid #333333;
+@media (min-width: 992px) {
+    .d-lg-inline {
+        display: inline-block !important;
+        /*yes we all hate important!, but this is to overwrite an important bootstrap put in there. Whatcha gonna do, fisty-cuff with bootstrap?*/
+    }
+    .job-board-search-container .job-board-search-content {
+        height: 70vh;
+        width: 20vw;
+        /*Column is setup with bootstrap to take up 25% of width, inside of a container that takes up 80% screen width. 80 * 0.25=20*/
+    }
 }
 
-.jobs-list-item .title{
-  display:block;
-  font-size:1.25em;
-  font-weight: bold;
+@media (max-width: 575px) {
+    .job-board-container .job-board-header {
+        height: 2rem;
+        border: none;
+    }
+    .job-board-container .job-board-header>div {
+        padding-left: 0px;
+    }
+    .job-board-container .job-board-header img {
+        display: none;
+    }
+    .job-board-container .job-board-header h1 {
+        font-size: 1.5rem;
+    }
+    .job-board-container .job-board-header .job-board-header-text {
+        margin: auto;
+        padding: 0px;
+    }
+    .job-board-container .job-board-content {
+        margin-top: 0px;
+    }
 }
 
-.jobs-list-item .sub-data{
-  display:block;
-  color:#545454;
-  font-size:1em;
+@media (max-width: 991px) {
+    .jobs-list-container {
+        margin-top: 9rem;
+        /*Space for search bar.*/
+    }
+    .job-board-content::-webkit-scrollbar {
+        display: none;
+    }
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .job-board-content {
+        -ms-overflow-style: none;
+        /* IE and Edge */
+        scrollbar-width: none;
+        /* Firefox */
+    }
+    #job-board-search-container #job-board-category-dropdown {
+        margin-top: 0px;
+        padding-bottom: 0px;
+        border-bottom: 0px;
+    }
+    #job-board-search-container #job-board-tag-dropdown {
+        margin-top: 0px;
+        padding-bottom: 0px;
+        border-bottom: 0px;
+        position: relative;
+    }
+    .job-board-search-content .search-info {
+        padding: 0px;
+        height: 1px;
+        width: 85%;
+        text-align: right;
+        margin: auto;
+        position: relative;
+        top: -1.1rem;
+        /*move up by the size of the searchbar to appear inside*/
+        pointer-events: none
+    }
+    .job-board-search-content .search-info>div {
+        margin-top: -1px;
+        /*offset the default padding used by an input component */
+        position: relative;
+        top: -.4rem;
+        /* move search info up by half the fontsize to center*/
+        padding-right: 10px;
+    }
 }
-
-
-
-.job-board-details-content{
-  position: absolute;
-}
-
-@media (min-width: 992px){
-  .job-board-search-container .job-board-search-content{
-    height:70vh;
-    width: 20vw; /*Column is setup with bootstrap to take up 25% of width, inside of a container that takes up 80% screen width. 80 * 0.25=20*/
-  }
-}
-
-.job-board-search-content{
-  position: absolute;
-  padding-left:10px;
-  padding-right:10px;
-  width:80vw;
-  height:auto;
-  z-index:1;
-
-}
-
-.job-board-search-content > *{
-  width:100%;
-  height:100%;
-}
-
-.job-board-search-content input{
-  position:relative;
-  width:85%;
-  left:-10px; /*re-center by offsetting by the size of the icon*/
-  padding-left:40px;
-  font-size:1.1rem;
-}
-
-.search-icon{
-  font-size:20px;
-  z-index:1;
-  position:relative;
-  left:20px; /*move inside searchbar*/
-}
-
-.job-board-search-content .search-info{
-  font-size:1rem;
-  color:#545454;
-  padding-top:5px;
-}
-
-#job-board-category-dropdown{
-  margin-top:10px;
-  padding-bottom:10px;
-  border-bottom:2px solid #444444;
-}
-
-#job-board-tag-dropdown{
-  margin-top:20px;
-  padding-bottom:10px;
-  border-bottom:2px solid #444444;
-}
-
-@media (max-width: 992px){
-  #job-board-search-container #job-board-category-dropdown{
-    margin-top:0px;
-    padding-bottom:0px;
-    border-bottom:0px;
-  }
-  
-  #job-board-search-container #job-board-tag-dropdown{
-    margin-top:0px;
-    padding-bottom:0px;
-    border-bottom:0px;
-    position:relative;
-  }  
-}
-
-#job-board-search-container .dropdown-toggle{
-  background-color: transparent;
-  color:#111111;
-  border:none;
-  box-shadow:none;
-  font-size:1.2rem;
-  width:85%;
-  text-align:left;
-}
-
-#job-board-search-container .dropdown-menu{
-  margin-left: -1rem !important; /*gotta overwrite that inline bootstrap style somehow...*/
-  width:100%;
-}
-
-
-#job-board-search-container .dropdown-toggle::after{
-  display:none;
-}
-
-.job-board-search-selections{
-  display: inline-block;
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
-
-.job-board-search-selections svg{
-  cursor:pointer;
-}
-
-.job-board-search-selections .content{
-  padding-left:5px;
-}
-
