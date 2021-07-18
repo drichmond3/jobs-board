@@ -21,8 +21,8 @@ function App() {
   let { data: positionTypes, error: loadPositionsError } = useLoadPositionTypes();
   let { data: jobPostings, error: loadJobPostingsError } = useLoadJobPostings(1, 12);
 
-  const scrollToJobBoard = () => {
-    scroller.scrollTo('jobBoardScrollElement', {
+  const scrollToElementId = (elementId: string) => {
+    scroller.scrollTo(elementId, {
       duration: 500,
       smooth: true,
     });
@@ -31,8 +31,10 @@ function App() {
 
   const setCategoryAndScroll = (cat: Category | null) => {
     setCategory(cat);
-    scrollToJobBoard();
+    scrollToElementId("jobBoardScrollElement");
   }
+
+  const scrollToTop = () => scrollToElementId("appPageScrollElement");
 
   categories = categories == null ? Array(MAX_HOME_CATEGORIES).fill(null) : categories;
 
@@ -41,12 +43,14 @@ function App() {
     <>
       {renderErrors(errors)}
       <main>
-        <div className="app-page">
-          <Home categories={categories.slice(0, MAX_HOME_CATEGORIES)} changeCategory={setCategoryAndScroll} />
-        </div>
+        <Element name="appPageScrollElement">
+          <div className="app-page">
+            <Home categories={categories.slice(0, MAX_HOME_CATEGORIES)} changeCategory={setCategoryAndScroll} />
+          </div>
+        </Element>
         <Element name="jobBoardScrollElement">
           <div className="app-page">
-            <JobBoard categories={categories} jobs={jobPostings} positionTypes={positionTypes} />
+            <JobBoard categories={categories} jobs={jobPostings} positionTypes={positionTypes} back={scrollToTop} />
           </div>
         </Element>
       </main >

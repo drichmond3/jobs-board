@@ -1,6 +1,6 @@
 .job-board-container{
   height: 100%;
-  width: 80%;
+  width: 80vw;
   margin:auto;
   display: flex;
   flex-direction:column;
@@ -24,6 +24,7 @@
 .job-board-header img{
   height: 100%;
   display: inline-block;
+  cursor:pointer;
 }
 
 .job-board-header-text{
@@ -31,6 +32,7 @@
   display: flex;
   flex-direction: column;  
   padding-left: 20px;
+  cursor:pointer;
 }
 
 .job-board-header-text > *{
@@ -46,7 +48,19 @@
 
 
 
-.jobs-list-container{
+@media (max-width: 991px){
+  .jobs-list-container{
+    margin-top:calc(4rem); /*Space for search bar.*/
+  }
+  .job-board-content::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .job-board-content {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
 }
 
 .jobs-list-item{
@@ -98,26 +112,39 @@
   position: absolute;
 }
 
-.job-board-search-container{
-  position:relative;
-  height:10px;
-}
-
 @media (min-width: 992px){
-  .h-100-lg{
-    height:100%;
+  .job-board-search-container .job-board-search-content{
+    height:70vh;
+    width: 20vw; /*Column is setup with bootstrap to take up 25% of width, inside of a container that takes up 80% screen width. 80 * 0.25=20*/
   }
 }
 
 .job-board-search-content{
   position: absolute;
-  height:80%;
-  width:100%;
   padding-left:10px;
   padding-right:10px;
+  width:80vw;
+  height:auto;
+  z-index:1;
+
 }
 
 .job-board-search-content > *{
   width:100%;
   height:100%;
+  overflow: hidden;
+}
+
+.job-board-search-content input{
+  position:relative;
+  width:85%;
+  left:-10px; /*re-center by offsetting by the size of the icon*/
+  padding-left:40px;
+}
+
+.search-icon{
+  font-size:20px;
+  z-index:1;
+  position:relative;
+  left:20px; /*move inside searchbar*/
 }

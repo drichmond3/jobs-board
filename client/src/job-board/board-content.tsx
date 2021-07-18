@@ -15,10 +15,10 @@ interface Props {
 export default function BoardContent(props: Props) {
   return (
     <Container fluid className="h-100">
-      <Row className="h-100-lg">
-        <Col lg="3" xs="12" className="h-100"> <SearchCriteria categories={props.categories} positionTypes={props.positionTypes} /> </Col>
+      <Row>
+        <Col lg="3" xs="12" className="h-100 p-0"> <SearchCriteria categories={props.categories} positionTypes={props.positionTypes} /> </Col>
         <Col lg="6" xs="12"> <JobsList jobs={props.jobs} /> </Col>
-        <Col lg="3" className="d-none d-lg-block h-100"> <Details /> </Col>
+        <Col lg="3" className="d-none d-lg-block h-100 p-0"> <Details /> </Col>
       </Row>
     </Container>
   );
