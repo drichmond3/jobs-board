@@ -11,6 +11,10 @@ interface Props {
   positionTypes: PositionType[] | null,
   resultCount: number,
   selectedCategories: Category[] | null,
+  selectedPositionTypes: PositionType[] | null,
+  isLoadingJobs: boolean,
+  toggleCategory: (category: Category) => void,
+  togglePositionType: (type: PositionType) => void,
   back: () => void
 }
 
@@ -27,7 +31,7 @@ export default function JobBoard(props: Props) {
 
 const renderHeader = (onClick: () => void) => {
   return (
-    <div className="job-board-header">
+    <div className="job-board-header user-select-none">
       <div>
         <img src={Logo} alt="mock jobs board logo" className="d-none d-sm-inline" onClick={onClick} />
         <div className="job-board-header-text" onClick={onClick}>

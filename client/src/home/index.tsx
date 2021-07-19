@@ -12,7 +12,7 @@ interface Props {
 export default function Home(props: Props) {
 
   return (
-    <div className="home-container">
+    <div className="home-container user-select-none">
       <header className="home-header">
         <div>
           <h1>Mock Jobs Board</h1>

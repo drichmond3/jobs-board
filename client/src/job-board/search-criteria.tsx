@@ -4,13 +4,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faChevronDown, faTimes } from '@fortawesome/free-solid-svg-icons'
 
 import { Category, PositionType } from "../service/JobTypes";
-import { isNull } from "util";
 
 interface Props {
   categories: Category[] | null,
   positionTypes: PositionType[] | null,
   resultCount: number,
-  selectedCategories: Category[] | null
+  selectedCategories: Category[] | null,
+  selectedPositionTypes: PositionType[] | null,
+  toggleCategory: (category: Category) => void,
+  togglePositionType: (positionType: PositionType) => void
 }
 
 export default function SearchCriteria(props: Props) {
@@ -29,11 +31,12 @@ export default function SearchCriteria(props: Props) {
                   </div>
                 </Col>
                 <Col lg={12} xs={6} id="job-board-category-dropdown">
-                  {renderDropdown("Categories", props.categories, props.selectedCategories)}
-                  {renderSelectedItems(props.selectedCategories)}
+                  {renderDropdown("Categories", props.categories, props.toggleCategory, props.selectedCategories)}
+                  {renderSelectedItems(props.selectedCategories, props.toggleCategory)}
                 </Col>
                 <Col lg={12} xs={6} id="job-board-tag-dropdown">
-                  {renderDropdown("Tags", props.positionTypes)}
+                  {renderDropdown("Tags", props.positionTypes, props.togglePositionType, props.selectedPositionTypes)}
+                  {renderSelectedItems(props.selectedPositionTypes, props.togglePositionType)}
                 </Col>
               </Row>
             </Container>
@@ -44,12 +47,12 @@ export default function SearchCriteria(props: Props) {
   );
 }
 
-const renderSelectedItems = (dataList: Category[] | null): JSX.Element[] => {
+const renderSelectedItems = (dataList: Category[] | null, toggle: (c: Renderable) => void): JSX.Element[] => {
   if (dataList) {
     return (
       dataList.map(data => {
         return (
-          <Card key={data.id} className="d-none d-lg-inline job-board-search-selections">
+          <Card key={data.id} className="d-none d-lg-inline job-board-search-selections user-select-none" onClick={() => toggle(data)}>
             <span><FontAwesomeIcon icon={faTimes} /></span>
             <span className="content">{data.name}</span>
           </Card>
@@ -64,17 +67,18 @@ const renderSelectedItems = (dataList: Category[] | null): JSX.Element[] => {
   }
 }
 
-const renderDropdown = (name: string, dataList: Category[] | PositionType[] | null, selectedData?: Category[] | PositionType[] | null): JSX.Element => {
+const renderDropdown = (name: string, dataList: Category[] | PositionType[] | null, toggle: ((c: Category) => void) | ((c: PositionType) => void), selectedData?: Category[] | PositionType[] | null): JSX.Element => {
 
+  let textClass = (selectedData && selectedData.length) ? "text-primary" : "";
   if (dataList && dataList.find(data => data)) {
     return (
       <Dropdown>
         <Dropdown.Toggle>
           <FontAwesomeIcon icon={faChevronDown} />
-          <span> {name}</span>
+          <span className={textClass}> {name}</span>
         </Dropdown.Toggle>
         <Dropdown.Menu>
-          {dataList.filter(data => data).map((data) => renderDropdownItem(data, selectedData))}
+          {dataList.filter(data => data).map((data) => renderDropdownItem(data, selectedData, toggle))}
         </Dropdown.Menu>
       </Dropdown>
     );
@@ -91,12 +95,18 @@ const renderDropdown = (name: string, dataList: Category[] | PositionType[] | nu
   }
 }
 
-const renderDropdownItem = (category: Category | PositionType, selectedItems: Category[] | PositionType[] | null | undefined): JSX.Element => {
+interface Renderable {
+  id: number,
+  name: string
+}
+const renderDropdownItem = function (category: Renderable, selectedItems: Renderable[] | null | undefined, toggle: (selected: Renderable) => void): JSX.Element {
   let selected: boolean = false;
   if (selectedItems) {
     selected = Boolean(selectedItems.find(item => item.id === category.id));
   }
   return (
-    <Dropdown.Item active={selected} key={category.id}>{selected && <FontAwesomeIcon icon={faTimes} />} {category.name}</Dropdown.Item>
+    <Dropdown.Item active={selected} key={category.id} onSelect={(() => toggle(category))}>
+      {selected && <FontAwesomeIcon icon={faTimes} />} {category.name}
+    </Dropdown.Item>
   )
 }

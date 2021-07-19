@@ -1,16 +1,23 @@
-.app-page{
-  height:100vh;
-}
-* {
-  scroll-behavior: smooth;
-}
-body::-webkit-scrollbar {
-  display: none;
+.app-page {
+    height: 100vh;
 }
 
+* {
+    scroll-behavior: smooth;
+}
+
+body::-webkit-scrollbar {
+    display: none;
+}
+
+
 /* Hide scrollbar for IE, Edge and Firefox */
+
 body {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-  overflow-y:hidden;
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+    overflow-y: hidden;
+    overflow-x: hidden;
 }

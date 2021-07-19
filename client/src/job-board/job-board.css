@@ -1,3 +1,5 @@
+/*loading-color: #a2a9a8*/
+
 .job-board-container {
     height: 100%;
     width: 80vw;
@@ -44,6 +46,7 @@
     margin-bottom: 10px;
     margin-top: 30px;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .jobs-list-item {
@@ -71,22 +74,163 @@
     justify-content: center;
 }
 
-.jobs-list-item img {
+.jobs-list-item .job-img {
     height: 80px;
+    width: 80px;
     border-radius: 50%;
     border: 2px solid #333333;
+    animation: fadeIn 1.0s ease-in;
 }
 
 .jobs-list-item .title {
     display: block;
     font-size: 1.25em;
     font-weight: bold;
+    transition: opacity 1s;
+    opacity: 100%;
+}
+
+.jobs-list-item {
+    color: #212529;
+    transition: color 1.0s;
 }
 
 .jobs-list-item .sub-data {
     display: block;
-    color: #545454;
     font-size: 1em;
+    color: #545454;
+    transition: color 1.0s;
+}
+
+.jobs-list-item button {
+    animation: fadeIn 1.0s ease-in;
+}
+
+.jobs-list-item.loading {
+    color: #21252900;
+}
+
+.jobs-list-item.loading .sub-data {
+    color: #54545400;
+}
+
+.jobs-list-item.loading .job-img {
+    background-color: #a2a9a8;
+    border: none;
+    animation: none;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0%
+    }
+    100% {
+        opacity: 100%
+    }
+}
+
+.jobs-list-item.loading .jobs-list-item-primary>span {
+    padding-left: 10px;
+    padding-right: 30px;
+}
+
+.jobs-list-item.loading .jobs-list-item-primary>span>span {
+    background-color: #a2a9a8;
+    border: none;
+    border-radius: 15px;
+    display: inline-block;
+    width: 100%;
+    font-size: .8rem;
+}
+
+.jobs-list-item.loading .jobs-list-item-primary>span.sub-data>span {
+    background-color: #a2a9a8;
+    border: none;
+    border-radius: 15px;
+    display: inline-block;
+    width: 100%;
+    font-size: .6rem;
+}
+
+.loading {
+    opacity: 70%;
+}
+
+.job-board-container .loading-indicator {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    overflow: hidden;
+}
+
+.job-board-container .loading-indicator>div {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #ffffff00, #ffffff77, #ffffff00);
+    top: 0px;
+    animation: subLoading 3s infinite;
+}
+
+.job-board-container .loading-indicator>div.delay-1 {
+    animation-delay: .25s;
+}
+
+.job-board-container .loading-indicator>div.delay-2 {
+    animation-delay: .5s;
+}
+
+.job-board-container .loading-indicator>div.delay-3 {
+    animation-delay: .75s;
+}
+
+.job-board-container .loading-indicator>div.delay-4 {
+    animation-delay: 1s;
+}
+
+.job-board-container .loading-indicator>div.delay-5 {
+    animation-delay: 1.25s;
+}
+
+.job-board-container .loading-indicator>div.delay-6 {
+    animation-delay: 1.5s;
+}
+
+.job-board-container .loading-indicator>div.delay-7 {
+    animation-delay: 1.75s;
+}
+
+.job-board-container .loading-indicator>div.delay-8 {
+    animation-delay: 2s;
+}
+
+.job-board-container .loading-indicator>div.delay-9 {
+    animation-delay: 2.25s;
+}
+
+.job-board-container .loading-indicator>div.delay-10 {
+    animation-delay: 2.5s;
+}
+
+.job-board-container .loading-indicator>div.delay-11 {
+    animation-delay: 2.75s;
+}
+
+@keyframes subLoading {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+.jobs-list-item.loading button {
+    background-color: #a2a9a8;
+    border: none;
+    box-shadow: none !important;
+    animation: none;
 }
 
 .job-board-details-content {
@@ -151,11 +295,10 @@
     font-size: 1.0rem;
     width: 85%;
     text-align: left;
+    margin-left: -1rem;
 }
 
 #job-board-search-container .dropdown-menu {
-    margin-left: -1rem !important;
-    /*gotta overwrite that inline bootstrap style somehow...*/
     width: 100%;
 }
 
@@ -167,6 +310,8 @@
     display: inline-block;
     padding-left: 1rem;
     padding-right: 1rem;
+    cursor: pointer;
+    margin-top: 5px;
 }
 
 .job-board-search-selections svg {

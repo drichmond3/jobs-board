@@ -5,31 +5,44 @@ import SyntheticButton from "../synthetic-button";
 import { JobPosting } from "../service/JobTypes";
 
 interface Props {
-  jobs: JobPosting[] | null;
+  jobs: JobPosting[] | null,
+  isLoadingJobs: boolean
 }
 
 export default function JobsList(props: Props) {
   let jobs = props.jobs ? props.jobs : [];
   return (
     <div className="jobs-list-container">
-      {jobs.map((job, index) => renderJob(job, index))}
+      {jobs.map((job, index) => renderJob(job, index, props.isLoadingJobs))}
     </div>
-  );
+  )
 }
 
-let renderJob = (job: JobPosting, key: number): ReactElement => {
+let renderJob = (job: JobPosting | null, key: number, isLoading: boolean): ReactElement => {
+  const delayIndex = (key * 5) % 12;
+  const delayClass = (key === 0) ? "" : "delay-" + delayIndex;
+
+  let imgSrc = (job && !isLoading) ? ("/uploads/" + job.logo_file_name) : undefined;
+  let imgAlt = (job && !isLoading) ? `Company ${job.company}` : "loading image";
+  let title = (job && !isLoading) ? job.title : <>&nbsp;</>;
+  let company = (job && !isLoading) ? job.company : <>&nbsp;</>;
+  let age = (job && !isLoading) ? getDisplayAge(job.age_in_hours) : <>&nbsp;</>;
+  let positionType = (job && !isLoading) ? job.job_position_types.name : <>&nbsp;</>
+  let viewBtnText = (job && !isLoading) ? "View" : <>&nbsp;</>;
+  let loadingClass = isLoading ? "loading" : "";
   return (
     <SyntheticButton key={key} hoverClass="bg-light" clickClass="jobs-bg-clicked">
-      <Card className="jobs-list-item">
-        <img src={"/uploads/" + job.logo_file_name} alt={`Company ${job.company}`}></img>
+      <Card id={"jobs-list-item" + key} className={"jobs-list-item " + loadingClass}>
+        {isLoading && <div className="loading-indicator"><div className={delayClass}></div></div>}
+        <object className="job-img" data={imgSrc} type="image/png">{imgAlt}</object>
         <div className="jobs-list-item-primary">
-          <span className="title">{job.title}</span>
-          <span className="sub-data">{job.company}</span>
-          <span className="sub-data">{getDisplayAge(job.age_in_hours)}</span>
+          <span className="title"><span>{title}</span></span>
+          <span className="sub-data"><span>{company}</span></span>
+          <span className="sub-data">{age}</span>
         </div>
         <div className="d-none d-md-block">
-          <span className="sub-data">{job.job_position_types.name}</span>
-          <Button variant="primary" className="d-none d-lg-block">View</Button>
+          <span className="sub-data">{positionType}</span>
+          <Button className="d-none d-lg-inline">{viewBtnText}</Button>
         </div>
       </Card>
     </SyntheticButton>
