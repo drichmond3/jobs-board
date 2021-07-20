@@ -13,6 +13,8 @@ interface Props {
   selectedCategories: Category[] | null,
   selectedPositionTypes: PositionType[] | null,
   isLoadingJobs: boolean,
+  searchText: string,
+  setSearchText: (text: string) => void,
   toggleCategory: (category: Category) => void,
   togglePositionType: (type: PositionType) => void,
   back: () => void

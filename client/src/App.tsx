@@ -1,27 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Alert } from 'react-bootstrap';
+import debounce from 'lodash.debounce';
+import { Element, scroller } from 'react-scroll';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-import './App.css';
 import Home from './home';
 import JobBoard from "./job-board";
 import { useLoadCategories, useLoadJobPostings, useLoadPositionTypes } from './service/service';
 import { Category, PositionType } from "./service/JobTypes";
-var Scroll = require('react-scroll');
-var Element = Scroll.Element;
-var scroller = Scroll.scroller;
+import { SearchContext } from './service/search-context';
 
 const MAX_HOME_CATEGORIES = 5;
 const MAX_RESULTS_PER_PAGE = 15;
+const SEARCH_DEBOUNCE_MILLISECONDS = 400;
 
 function App() {
   //TODO Extract state into a context.
   let [selectedCategories, setSelectedCategories] = useState<Category[] | null>(null);
   let [selectedPositionTypes, setSelectedPositionTypes] = useState<PositionType[] | null>(null);
+  let [tmpSearchText, setTmpSearchText] = useState<string>("");
+  let [searchText, setSearchText] = useState<string>("");
   let { data: categories, error: loadCategoriesError } = useLoadCategories();
   let { data: positionTypes, error: loadPositionsError } = useLoadPositionTypes();
-  let { data: jobPostings, error: loadJobPostingsError, headers: jobPostingsHeader, loading: isLoadingJobs } = useLoadJobPostings(selectedCategories, selectedPositionTypes, 1, MAX_RESULTS_PER_PAGE);
+  let { data: jobPostings, error: loadJobPostingsError, headers: jobPostingsHeader, loading: isLoadingJobs } = useLoadJobPostings(searchText, selectedCategories, selectedPositionTypes, 1, MAX_RESULTS_PER_PAGE);
+  let debouncedSetSearchText = useCallback(debounce((text: string) => setSearchText(text), SEARCH_DEBOUNCE_MILLISECONDS), []);
+
+  let updateSearchText = (text: string) => {
+    setTmpSearchText(text);
+    debouncedSetSearchText(text);
+  }
 
   const scrollToElementId = (elementId: string) => {
     scroller.scrollTo(elementId, {
@@ -85,7 +91,7 @@ function App() {
 
   let errors = [loadCategoriesError];
   return (
-    <>
+    <SearchContext.Provider value={{ selectedCategories, selectedPositionTypes, jobPostings, tmpSearchText, toggleCategory, togglePositionType, updateSearchText, isLoadingJobs, searchResultCount }}>
       {renderErrors(errors)}
       <main>
         <Element name="appPageScrollElement">
@@ -105,11 +111,13 @@ function App() {
               selectedPositionTypes={selectedPositionTypes}
               toggleCategory={toggleCategory}
               togglePositionType={togglePositionType}
-              isLoadingJobs={isLoadingJobs} />
+              isLoadingJobs={isLoadingJobs}
+              searchText={tmpSearchText}
+              setSearchText={updateSearchText} />
           </div>
         </Element>
       </main >
-    </>
+    </SearchContext.Provider>
   );
 }
 

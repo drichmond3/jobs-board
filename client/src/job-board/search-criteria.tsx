@@ -11,6 +11,8 @@ interface Props {
   resultCount: number,
   selectedCategories: Category[] | null,
   selectedPositionTypes: PositionType[] | null,
+  searchText: string,
+  setSearchText: (text: string) => void,
   toggleCategory: (category: Category) => void,
   togglePositionType: (positionType: PositionType) => void
 }
@@ -25,7 +27,7 @@ export default function SearchCriteria(props: Props) {
               <Row>
                 <Col lg={12} xs={12} className="p-0">
                   <FontAwesomeIcon icon={faSearch} className="search-icon" />
-                  <input placeholder="Search..."></input>
+                  <input placeholder="Search..." value={props.searchText} onChange={(e) => props.setSearchText(e.target.value)}></input>
                   <div className="search-info d-none d-sm-block">
                     <div>{props.resultCount} results</div>
                   </div>

@@ -12,6 +12,8 @@ interface Props {
   positionTypes: PositionType[] | null,
   resultCount: number,
   isLoadingJobs: boolean,
+  searchText: string,
+  setSearchText: (text: string) => void,
   toggleCategory: (category: Category) => void,
   togglePositionType: (type: PositionType) => void,
   selectedCategories: Category[] | null,
@@ -30,7 +32,9 @@ export default function BoardContent(props: Props) {
             selectedCategories={props.selectedCategories}
             toggleCategory={props.toggleCategory}
             togglePositionType={props.togglePositionType}
-            selectedPositionTypes={props.selectedPositionTypes} />
+            selectedPositionTypes={props.selectedPositionTypes}
+            searchText={props.searchText}
+            setSearchText={props.setSearchText} />
         </Col>
         <Col lg="6" xs="12"> <JobsList jobs={props.jobs} isLoadingJobs={props.isLoadingJobs} /> </Col>
         <Col lg="3" className="d-none d-lg-block h-100 p-0"> <Details /> </Col>
