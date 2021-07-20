@@ -4,20 +4,15 @@ import { Container, Row, Col } from "react-bootstrap";
 import Details from "./details";
 import SearchCriteria from "./search-criteria";
 import JobsList from "./jobs-list";
-import { JobPosting, Category, PositionType } from "../service/JobTypes";
+import { Category, PositionType } from "../service/JobTypes";
 
 interface Props {
   categories: Category[] | null,
-  jobs: JobPosting[] | null,
   positionTypes: PositionType[] | null,
-  resultCount: number,
-  isLoadingJobs: boolean,
-  searchText: string,
-  setSearchText: (text: string) => void,
-  toggleCategory: (category: Category) => void,
-  togglePositionType: (type: PositionType) => void,
-  selectedCategories: Category[] | null,
-  selectedPositionTypes: PositionType[] | null
+  loadCategoriesError: Error | null,
+  loadPositionTypesError: Error | null,
+  forceCategoriesReload: () => void,
+  forcePositionTypesReload: () => void
 }
 
 export default function BoardContent(props: Props) {
@@ -28,15 +23,13 @@ export default function BoardContent(props: Props) {
           <SearchCriteria
             categories={props.categories}
             positionTypes={props.positionTypes}
-            resultCount={props.resultCount}
-            selectedCategories={props.selectedCategories}
-            toggleCategory={props.toggleCategory}
-            togglePositionType={props.togglePositionType}
-            selectedPositionTypes={props.selectedPositionTypes}
-            searchText={props.searchText}
-            setSearchText={props.setSearchText} />
+            loadCategoriesError={props.loadCategoriesError}
+            loadPositionTypesError={props.loadPositionTypesError}
+            forceCategoriesReload={props.forceCategoriesReload}
+            forcePositionTypesReload={props.forcePositionTypesReload}
+          />
         </Col>
-        <Col lg="6" xs="12"> <JobsList jobs={props.jobs} isLoadingJobs={props.isLoadingJobs} /> </Col>
+        <Col lg="6" xs="12"> <JobsList /> </Col>
         <Col lg="3" className="d-none d-lg-block h-100 p-0"> <Details /> </Col>
       </Row>
     </Container>

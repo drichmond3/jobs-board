@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Category, JobPosting, PositionType } from "./JobTypes";
 
@@ -26,16 +26,24 @@ export const ENDPOINTS: {
   }
 }
 
-export function useLoadCategories(): { data: Category[] | null, headers: Headers | null, error: Error | null, loading: boolean } {
+interface UseFetchResponse<T> {
+  data: T | null,
+  headers: Headers | null,
+  error: Error | null,
+  loading: boolean,
+  forceReload: () => void
+}
+
+export function useLoadCategories(): UseFetchResponse<Category[]> {
   return useFetch<Category[]>(ENDPOINTS.getCategories());
 }
 
-export function useLoadJobPostings(searchText: string, categories: Category[] | null, positionTypes: PositionType[] | null, pageNumber: number, resultsPerPage: number): { data: JobPosting[] | null, headers: Headers | null, error: Error | null, loading: boolean } {
+export function useLoadJobPostings(searchText: string, categories: Category[] | null, positionTypes: PositionType[] | null, pageNumber: number, resultsPerPage: number): UseFetchResponse<JobPosting[]> {
   let response = useFetch<JobPosting[]>(ENDPOINTS.getJobPostings(searchText, getIds(categories), getIds(positionTypes), pageNumber, resultsPerPage));
   return response;
 }
 
-export function useLoadPositionTypes(): { data: PositionType[] | null, headers: Headers | null, error: Error | null, loading: boolean } {
+export function useLoadPositionTypes(): UseFetchResponse<PositionType[]> {
   return useFetch<PositionType[]>(ENDPOINTS.getPositionTypes());
 }
 
@@ -46,17 +54,24 @@ export function useLoadPositionTypes(): { data: PositionType[] | null, headers: 
  * @param url the url to make a GET request to. A new request will be made anytime this value changes.
  * @returns the state of the most recent fetch request.
  */
-export function useFetch<T>(url: string): { data: T | null, headers: Headers | null, error: Error | null, loading: boolean } {
+export function useFetch<T>(url: string): UseFetchResponse<T> {
   const [data, setData] = useState<T | null>(null);
   const [headers, setHeaders] = useState<Headers | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const requestCount = useRef<number>(0); //need a value we can modify, persists across re-renders, and doesn't cause a re-render on change to track concurrent request count.
   const [loading, setLoading] = useState<boolean>(false);
+  const [reloadFlag, setReloadFlag] = useState<boolean>(false);
+  const forceReload = useCallback(() => setReloadFlag(true), []);
 
   useEffect(() => {
+    if (reloadFlag) {
+      setReloadFlag(false);
+      return;
+    }
     requestCount.current++;
     let requestIndex = requestCount.current;
     setLoading(true);
+    setError(null);
     fetch(url).then((response: Response) => {
       if (response.ok) {
         response.json().then(
@@ -76,8 +91,8 @@ export function useFetch<T>(url: string): { data: T | null, headers: Headers | n
         setLoading(false);
       }
     })
-  }, [url])
-  return { data, headers, error, loading: loading }
+  }, [url, reloadFlag])
+  return { data, headers, error, loading: loading, forceReload: forceReload }
 }
 
 /**
@@ -87,14 +102,20 @@ export function useFetch<T>(url: string): { data: T | null, headers: Headers | n
  * @param url the url to make a GET request to. A new request will be made anytime this value changes.
  * @returns 
  */
-export function useFetchIncludeAll<T>(url: string): { data: T | null, headers: Headers | null, error: Error | null, loading: boolean } {
+export function useFetchIncludeAll<T>(url: string): UseFetchResponse<T> {
   const [data, setData] = useState<T | null>(null);
   const [headers, setHeaders] = useState<Headers | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const requestMapRef = useRef<{ [name: string]: boolean }>({}); //need a value we can modify, persists across re-renders, and doesn't cause a re-render on change to track concurrent request count.
   const [loading, setLoading] = useState<boolean>(false);
+  const [reloadFlag, setReloadFlag] = useState<boolean>(false);
+  const forceReload = useCallback(() => setReloadFlag(true), []);
 
   useEffect(() => {
+    if (reloadFlag) {
+      setReloadFlag(false);
+      return;
+    }
     requestMapRef.current[url] = true;
     setLoading(true);
     fetch(url).then((response: Response) => {
@@ -115,8 +136,8 @@ export function useFetchIncludeAll<T>(url: string): { data: T | null, headers: H
         setLoading(false);
       }
     })
-  }, [url])
-  return { data, headers, error, loading: loading }
+  }, [url, reloadFlag])
+  return { data, headers, error, loading: loading, forceReload }
 }
 
 

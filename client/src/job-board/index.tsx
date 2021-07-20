@@ -1,23 +1,18 @@
 import React from "react";
 
 import BoardContent from "./board-content"
-import { Category, JobPosting, PositionType } from "../service/JobTypes";
+import { Category, PositionType } from "../service/JobTypes";
 import Logo from "../images/Logo.svg";
 import "./job-board.css";
 
 interface Props {
   categories: Category[] | null,
-  jobs: JobPosting[] | null,
   positionTypes: PositionType[] | null,
-  resultCount: number,
-  selectedCategories: Category[] | null,
-  selectedPositionTypes: PositionType[] | null,
-  isLoadingJobs: boolean,
-  searchText: string,
-  setSearchText: (text: string) => void,
-  toggleCategory: (category: Category) => void,
-  togglePositionType: (type: PositionType) => void,
-  back: () => void
+  back: () => void,
+  loadCategoriesError: Error | null,
+  loadPositionTypesError: Error | null,
+  forceCategoriesReload: () => void,
+  forcePositionTypesReload: () => void
 }
 
 export default function JobBoard(props: Props) {

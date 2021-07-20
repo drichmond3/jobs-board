@@ -1,19 +1,28 @@
-import React, { ReactElement } from "react";
-import { ListGroup, Button, Card } from "react-bootstrap";
+import React, { ReactElement, useContext } from "react";
+import { Button, Card, Alert } from "react-bootstrap";
 
 import SyntheticButton from "../synthetic-button";
 import { JobPosting } from "../service/JobTypes";
-
+import { SearchContext, ContextValue } from "../service/search-context";
 interface Props {
-  jobs: JobPosting[] | null,
-  isLoadingJobs: boolean
+
 }
 
 export default function JobsList(props: Props) {
-  let jobs = props.jobs ? props.jobs : [];
+  const { jobPostings, isLoadingJobs, loadJobPostingsError } = useContext<ContextValue>(SearchContext);
+  let jobs: JobPosting[] | null = jobPostings ? jobPostings : [];
+  if (isLoadingJobs) {
+    jobs = Array(15).fill(null);
+  }
+
+  if (loadJobPostingsError) {
+    return (
+      <Alert variant="danger">Unable to find any search results. Please change your search criteria and try again.</Alert>
+    )
+  }
   return (
     <div className="jobs-list-container">
-      {jobs.map((job, index) => renderJob(job, index, props.isLoadingJobs))}
+      {jobs.map((job, index) => renderJob(job, index, isLoadingJobs))}
     </div>
   )
 }

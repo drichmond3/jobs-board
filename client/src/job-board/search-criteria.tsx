@@ -1,23 +1,22 @@
-import React, { ReactElement } from "react";
-import { Card, Col, Container, Row, Dropdown, CloseButton } from "react-bootstrap";
+import React, { useContext } from "react";
+import { Card, Col, Container, Row, Dropdown, Alert } from "react-bootstrap";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faChevronDown, faTimes } from '@fortawesome/free-solid-svg-icons'
 
 import { Category, PositionType } from "../service/JobTypes";
+import { SearchContext, ContextValue } from "../service/search-context";
 
 interface Props {
   categories: Category[] | null,
   positionTypes: PositionType[] | null,
-  resultCount: number,
-  selectedCategories: Category[] | null,
-  selectedPositionTypes: PositionType[] | null,
-  searchText: string,
-  setSearchText: (text: string) => void,
-  toggleCategory: (category: Category) => void,
-  togglePositionType: (positionType: PositionType) => void
+  loadCategoriesError: Error | null,
+  loadPositionTypesError: Error | null,
+  forceCategoriesReload: () => void,
+  forcePositionTypesReload: () => void
 }
 
 export default function SearchCriteria(props: Props) {
+  const { selectedCategories, selectedPositionTypes, tmpSearchText, toggleCategory, togglePositionType, updateSearchText, searchResultCount } = useContext<ContextValue>(SearchContext);
   return (
     <div id="job-board-search-container" className="job-board-search-container">
       <div className="job-board-search-content">
@@ -27,18 +26,18 @@ export default function SearchCriteria(props: Props) {
               <Row>
                 <Col lg={12} xs={12} className="p-0">
                   <FontAwesomeIcon icon={faSearch} className="search-icon" />
-                  <input placeholder="Search..." value={props.searchText} onChange={(e) => props.setSearchText(e.target.value)}></input>
+                  <input placeholder="Search..." value={tmpSearchText} onChange={(e) => updateSearchText(e.target.value)}></input>
                   <div className="search-info d-none d-sm-block">
-                    <div>{props.resultCount} results</div>
+                    <div>{searchResultCount} results</div>
                   </div>
                 </Col>
                 <Col lg={12} xs={6} id="job-board-category-dropdown">
-                  {renderDropdown("Categories", props.categories, props.toggleCategory, props.selectedCategories)}
-                  {renderSelectedItems(props.selectedCategories, props.toggleCategory)}
+                  {renderDropdown("Categories", props.categories, toggleCategory, selectedCategories, props.loadCategoriesError, props.forceCategoriesReload)}
+                  {renderSelectedItems(selectedCategories, toggleCategory)}
                 </Col>
                 <Col lg={12} xs={6} id="job-board-tag-dropdown">
-                  {renderDropdown("Tags", props.positionTypes, props.togglePositionType, props.selectedPositionTypes)}
-                  {renderSelectedItems(props.selectedPositionTypes, props.togglePositionType)}
+                  {renderDropdown("Tags", props.positionTypes, togglePositionType, selectedPositionTypes, props.loadPositionTypesError, props.forcePositionTypesReload)}
+                  {renderSelectedItems(selectedPositionTypes, togglePositionType)}
                 </Col>
               </Row>
             </Container>
@@ -69,19 +68,23 @@ const renderSelectedItems = (dataList: Category[] | null, toggle: (c: Renderable
   }
 }
 
-const renderDropdown = (name: string, dataList: Category[] | PositionType[] | null, toggle: ((c: Category) => void) | ((c: PositionType) => void), selectedData?: Category[] | PositionType[] | null): JSX.Element => {
+const renderDropdown = (rawTitle: string, dataList: Category[] | PositionType[] | null, toggle: ((c: Category) => void) | ((c: PositionType) => void), selectedData: Category[] | PositionType[] | null, error: Error | null, retryLoad: () => void): JSX.Element => {
 
+  const hasData = dataList && dataList.find(data => data);
   let textClass = (selectedData && selectedData.length) ? "text-primary" : "";
-  if (dataList && dataList.find(data => data)) {
+  let name = hasData ? rawTitle : "Loading...";
+  let safeDataList = dataList || [];
+  if (!error) {
     return (
       <Dropdown>
         <Dropdown.Toggle>
           <FontAwesomeIcon icon={faChevronDown} />
           <span className={textClass}> {name}</span>
         </Dropdown.Toggle>
-        <Dropdown.Menu>
-          {dataList.filter(data => data).map((data) => renderDropdownItem(data, selectedData, toggle))}
-        </Dropdown.Menu>
+        {hasData && (
+          <Dropdown.Menu>
+            {safeDataList.filter(data => data).map((data) => renderDropdownItem(data, selectedData, toggle))}
+          </Dropdown.Menu>)}
       </Dropdown>
     );
   }
@@ -90,8 +93,11 @@ const renderDropdown = (name: string, dataList: Category[] | PositionType[] | nu
       <Dropdown>
         <Dropdown.Toggle>
           <FontAwesomeIcon icon={faChevronDown} />
-          <span> Loading...</span>
+          <span className={textClass}> {rawTitle}</span>
         </Dropdown.Toggle>
+        <Dropdown.Menu>
+          <Alert variant="danger" onClick={() => retryLoad()}><span>There was an issue loading available options.</span><br></br><b>Click to retry</b></Alert>
+        </Dropdown.Menu>
       </Dropdown>
     )
   }
