@@ -231,10 +231,31 @@
     border: none;
     box-shadow: none !important;
     animation: none;
+    color: #00000000;
 }
 
 .job-board-details-content {
     position: absolute;
+    width: 20vw;
+    min-height: 400px;
+}
+
+.job-board-details-content.empty {
+    height: 40vh;
+}
+
+.job-board-details-content>div {
+    margin-right: 10px;
+    height: 100%;
+}
+
+.job-board-details-content button {
+    width: 50%;
+    margin: auto;
+}
+
+.job-board-details-content .card-body {
+    overflow-y: auto;
 }
 
 .job-board-search-content {

@@ -1,12 +1,11 @@
-import React, { useState, useCallback, useContext } from 'react';
-import { Alert } from 'react-bootstrap';
+import React, { useContext } from 'react';
 import { Element, scroller } from 'react-scroll';
 
 import Home from './home';
 import JobBoard from "./job-board";
 import { useLoadCategories, useLoadPositionTypes } from './service/service';
 import { Category } from "./service/JobTypes";
-import { SearchProvider, SearchContext, ContextValue } from './service/search-context';
+import { SearchContext, ContextValue } from './service/search-context';
 
 const MAX_HOME_CATEGORIES = 5;
 
@@ -54,18 +53,6 @@ function App() {
       </Element>
     </main >
   );
-}
-
-const renderErrors = (errors: (Error | null)[]) => {
-  return errors.map((error: Error | null, id: number) => {
-    if (error == null) {
-      return null;
-    }
-    const message = error.message ? error.message : "Unexpected Error";
-    return (
-      <Alert key={id} variant="danger">{message}</Alert>
-    )
-  }).filter(error => Boolean(error))
 }
 
 export default App;

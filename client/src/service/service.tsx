@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { Category, JobPosting, PositionType } from "./JobTypes";
+import { Category, JobPosting, JobPostingDetails, PositionType } from "./JobTypes";
 
 export const ENDPOINTS: {
   getCategories: () => string,
   getPositionTypes: () => string,
-  getJobPosting: (jobPostingId: number) => string,
+  getJobPostingDetails: (jobPostingId: number) => string,
   getJobPostings: (searchText: string, categoryIds: number[], positionTypeIds: number[], pageNumber: number, resultsPerPage: number) => string
 } = {
   getCategories: () => `${process.env.REACT_APP_SERVICE_URL}/job_categories?_sort=popularity&_order=desc&_limit=100`,
   getPositionTypes: () => `${process.env.REACT_APP_SERVICE_URL}/job_position_types?_sort=name&_order=asc&_limit=100`,
-  getJobPosting: (id: number) => `${process.env.REACT_APP_SERVICE_URL}/job_postings/${id}?_expand=job_categories&_expand=job_position_types`,
+  getJobPostingDetails: (id: number) => `${process.env.REACT_APP_SERVICE_URL}/job_posting_additional_details?job_posting_id=${id}&_limit=1000`,
   getJobPostings: (searchText, categoryIds, positionTypeIds, pageNumber, resultsPerPage) => {
     let response = `${process.env.REACT_APP_SERVICE_URL}/job_postings?_expand=job_categories&_expand=job_position_types&_page=${pageNumber}&_limit=${resultsPerPage}`;
     if (categoryIds && categoryIds.length > 0) {
@@ -34,19 +34,89 @@ interface UseFetchResponse<T> {
   forceReload: () => void
 }
 
+interface JobPostingsResponse extends UseFetchResponse<JobPosting[]> {
+  loadMoreJobs: () => void,
+  isEndOfStream: boolean
+}
+
 export function useLoadCategories(): UseFetchResponse<Category[]> {
   return useFetch<Category[]>(ENDPOINTS.getCategories());
 }
 
-export function useLoadJobPostings(searchText: string, categories: Category[] | null, positionTypes: PositionType[] | null, pageNumber: number, resultsPerPage: number): UseFetchResponse<JobPosting[]> {
-  let response = useFetch<JobPosting[]>(ENDPOINTS.getJobPostings(searchText, getIds(categories), getIds(positionTypes), pageNumber, resultsPerPage));
-  return response;
+interface FetchingState {
+  QUEUED: number,
+  FETCHING: number,
+  FINISHED: number,
+  EMPTY: number
+}
+
+export function useLoadJobPostings(searchText: string, categories: Category[] | null, positionTypes: PositionType[] | null, resultsPerPage: number): JobPostingsResponse {
+  let [safeSearchCriteria, setSafeSearchCriteria] = useState<{ pageNumber: number, searchText: string, categories: Category[] | null, positionTypes: PositionType[] | null, resultsPerPage: number }>(
+    { pageNumber: 1, searchText, categories, positionTypes, resultsPerPage }
+  );
+  let [lastRequestId, setLastRequestId] = useState<number>(-1);
+  let response = useFetch<JobPosting[]>(ENDPOINTS.getJobPostings(safeSearchCriteria.searchText, getIds(safeSearchCriteria.categories), getIds(safeSearchCriteria.positionTypes), safeSearchCriteria.pageNumber, safeSearchCriteria.resultsPerPage));
+  let [jobs, setJobs] = useState<JobPosting[] | null>(null);
+  let [fetchState, setFetchState] = useState<keyof FetchingState>("FETCHING");
+  useEffect(() => {
+    if (fetchState === "QUEUED") {
+      setSafeSearchCriteria((old) => {
+        return { ...safeSearchCriteria, pageNumber: (old.pageNumber + 1) }
+      });
+      setFetchState("FETCHING");
+    }
+  }, [fetchState, safeSearchCriteria]);
+
+  //adds newly loaded lobs to the list of jobs we're displaying.
+  useEffect(() => {
+    if (response.data && fetchState === "FETCHING" && response.requestId > lastRequestId) {
+      setJobs(j => {
+        if (response.data && j) {
+          return [...j, ...response.data]
+        }
+        return response.data;
+      });
+      setLastRequestId(response.requestId);
+      const isNoMoreResults = (!response.data || response.data.length === 0) && (!response.error) && (!response.loading);
+      if (isNoMoreResults) {
+        setFetchState("EMPTY");
+      }
+      else {
+        setTimeout(() => setFetchState("FINISHED"), 1000);
+      }
+    }
+  }, [response.data, response.requestId, response.error, response.loading, fetchState, lastRequestId]);
+
+  //clears jobs list anytime we change our search criteria.
+  useEffect(() => {
+    setJobs([]);
+    setSafeSearchCriteria({ pageNumber: 1, searchText, categories, positionTypes, resultsPerPage });
+    setFetchState("FETCHING"); //circumvents the request 1 page at a time state machine process.
+  }, [searchText, categories, positionTypes, resultsPerPage]);
+
+  let loadMoreJobs = () => {
+    setFetchState((fetchState) => {
+      if (fetchState === "FINISHED") {
+        return "QUEUED"
+      }
+      return fetchState;
+    });
+  }
+
+  return { data: jobs, headers: response.headers, error: response.error, loading: response.loading, forceReload: loadMoreJobs, loadMoreJobs, isEndOfStream: (fetchState === "EMPTY") }
+}
+
+export function useLoadJobPostingDetails(id: number): UseFetchResponse<JobPostingDetails[]> {
+  return useFetch<JobPostingDetails[]>(ENDPOINTS.getJobPostingDetails(id));
 }
 
 export function useLoadPositionTypes(): UseFetchResponse<PositionType[]> {
   return useFetch<PositionType[]>(ENDPOINTS.getPositionTypes());
 }
 
+interface RawFetchResponse<T> extends UseFetchResponse<T> {
+  requestId: number
+}
 /**
  * Makes a GET request to the specified url.
  * This implementation only cares about the most recent request sent. When a response is received, the return values are only updated if the request is the most recent request the client sent out. 
@@ -54,15 +124,11 @@ export function useLoadPositionTypes(): UseFetchResponse<PositionType[]> {
  * @param url the url to make a GET request to. A new request will be made anytime this value changes.
  * @returns the state of the most recent fetch request.
  */
-export function useFetch<T>(url: string): UseFetchResponse<T> {
-  const [data, setData] = useState<T | null>(null);
-  const [headers, setHeaders] = useState<Headers | null>(null);
-  const [error, setError] = useState<Error | null>(null);
+export function useFetch<T>(url: string): RawFetchResponse<T> {
   const requestCount = useRef<number>(0); //need a value we can modify, persists across re-renders, and doesn't cause a re-render on change to track concurrent request count.
-  const [loading, setLoading] = useState<boolean>(false);
   const [reloadFlag, setReloadFlag] = useState<boolean>(false);
   const forceReload = useCallback(() => setReloadFlag(true), []);
-
+  const [responseData, setResponseData] = useState<{ data: T | null, headers: Headers | null, error: Error | null, loading: boolean, requestId: number }>({ data: null, headers: null, error: null, loading: false, requestId: requestCount.current });
   useEffect(() => {
     if (reloadFlag) {
       setReloadFlag(false);
@@ -70,29 +136,26 @@ export function useFetch<T>(url: string): UseFetchResponse<T> {
     }
     requestCount.current++;
     let requestIndex = requestCount.current;
-    setLoading(true);
-    setError(null);
+    setResponseData(old => ({ ...old, loading: true, error: null }));
     fetch(url).then((response: Response) => {
       if (response.ok) {
         response.json().then(
           (parsedObject: T) => {
             if (requestIndex === requestCount.current) {
-              setData(parsedObject);
-              setHeaders(response.headers);
-              setError(null);
+              setResponseData(old => ({ data: parsedObject, headers: response.headers, error: null, loading: false, requestId: requestCount.current }))
             }
           }
         )
       }
     }).catch((error: Error) => {
-      setError(error);
+      setResponseData(old => ({ ...old, error: error }));
     }).finally(() => {
       if (requestIndex === requestCount.current) {
-        setLoading(false);
+        setResponseData(old => ({ ...old, loading: false }));
       }
     })
   }, [url, reloadFlag])
-  return { data, headers, error, loading: loading, forceReload: forceReload }
+  return { data: responseData.data, headers: responseData.headers, error: responseData.error, loading: responseData.loading, forceReload: forceReload, requestId: responseData.requestId }
 }
 
 /**

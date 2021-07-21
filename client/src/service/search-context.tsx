@@ -1,4 +1,4 @@
-import React, { ReactElement, useState, useCallback, ReactChildren } from "react";
+import React, { useState, useCallback } from "react";
 import { Category, JobPosting, PositionType } from "./JobTypes";
 import debounce from 'lodash.debounce';
 
@@ -16,7 +16,9 @@ export interface ContextValue {
   updateSearchText: (text: string) => void,
   isLoadingJobs: boolean,
   searchResultCount: number,
-  loadJobPostingsError: Error | null
+  loadJobPostingsError: Error | null,
+  isEndOfJobsStream: boolean,
+  loadMoreJobs: () => void
 }
 
 let defaultContextValue: ContextValue = {
@@ -31,7 +33,9 @@ let defaultContextValue: ContextValue = {
   updateSearchText: (text: string) => { throw Error("Search Context not initialized") },
   isLoadingJobs: false,
   searchResultCount: 0,
-  loadJobPostingsError: null
+  loadJobPostingsError: null,
+  isEndOfJobsStream: false,
+  loadMoreJobs: () => { throw Error("Search Context not initialized") }
 }
 
 interface Props {
@@ -47,7 +51,8 @@ export function SearchProvider(props: Props) {
   let [selectedPositionTypes, setSelectedPositionTypes] = useState<PositionType[] | null>(null);
   let [tmpSearchText, setTmpSearchText] = useState<string>("");
   let [searchText, setSearchText] = useState<string>("");
-  let { data: jobPostings, error: loadJobPostingsError, headers: jobPostingsHeader, loading: isLoadingJobs } = useLoadJobPostings(searchText, selectedCategories, selectedPositionTypes, 1, props.maxResultCount);
+  let { data: jobPostings, error: loadJobPostingsError, headers: jobPostingsHeader, loading: isLoadingJobs, loadMoreJobs, isEndOfStream } = useLoadJobPostings(searchText, selectedCategories, selectedPositionTypes, props.maxResultCount);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   let debouncedSetSearchText = useCallback(debounce((text: string) => setSearchText(text), props.debounceInMilliseconds), []);
 
   let updateSearchText = (text: string) => {
@@ -108,7 +113,7 @@ export function SearchProvider(props: Props) {
   searchResultCount = Number.parseInt(searchResultCount + "");
 
   return (
-    <SearchContext.Provider value={{ selectedCategories, selectedPositionTypes, jobPostings, tmpSearchText, toggleCategory, togglePositionType, setCategory, clearPositionTypes, updateSearchText, isLoadingJobs, searchResultCount, loadJobPostingsError }}>
+    <SearchContext.Provider value={{ selectedCategories, selectedPositionTypes, jobPostings, tmpSearchText, toggleCategory, togglePositionType, setCategory, clearPositionTypes, updateSearchText, isLoadingJobs, searchResultCount, loadJobPostingsError, loadMoreJobs, isEndOfJobsStream: isEndOfStream }}>
       {props.children}
     </SearchContext.Provider>
   )

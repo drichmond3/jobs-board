@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 import BoardContent from "./board-content"
-import { Category, PositionType } from "../service/JobTypes";
+import { SearchContext, ContextValue } from "../service/search-context";
+import { Category, PositionType, JobPosting } from "../service/JobTypes";
 import Logo from "../images/Logo.svg";
 import "./job-board.css";
 
@@ -16,11 +17,14 @@ interface Props {
 }
 
 export default function JobBoard(props: Props) {
+  const [selectedJob, setSelectedJob] = useState<JobPosting | null>(null);
+  const { selectedCategories, selectedPositionTypes, tmpSearchText } = useContext<ContextValue>(SearchContext);
+  useEffect(() => setSelectedJob(null), [selectedCategories, selectedPositionTypes, tmpSearchText]);
   return (
     <div className="job-board-container">
       {renderHeader(props.back)}
       <div className="job-board-content">
-        <BoardContent {...props} />
+        <BoardContent {...props} selectedJob={selectedJob} setSelectedJob={setSelectedJob} />
       </div>
     </div>
   )
