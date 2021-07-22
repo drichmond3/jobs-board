@@ -13,10 +13,12 @@ interface Props {
   positionTypes: PositionType[] | null,
   loadCategoriesError: Error | null,
   selectedJob: JobPosting | null,
+  detailsJob: JobPosting | null,
   loadPositionTypesError: Error | null,
   forceCategoriesReload: () => void,
   forcePositionTypesReload: () => void,
   setSelectedJob: (job: JobPosting | null) => void,
+  setSelectedDetailsJob: (job: JobPosting | null) => void,
   showApplication: () => void,
   back: () => void
 }
@@ -40,8 +42,8 @@ export default function BoardContent(props: Props) {
               forcePositionTypesReload={props.forcePositionTypesReload}
             />
           </Col>
-          <Col lg="6" xs="12"> <JobsList setSelectedJob={props.setSelectedJob} showApplication={props.showApplication} /> </Col>
-          <Col lg="3" className="d-none d-lg-block h-100 p-0"> <Details job={props.selectedJob} showApplication={props.showApplication} /> </Col>
+          <Col lg="6" xs="12"> <JobsList setSelectedJob={props.setSelectedJob} showApplication={props.showApplication} setSelectedDetailsJob={props.setSelectedDetailsJob} /> </Col>
+          <Col lg="3" className="d-none d-lg-block h-100 p-0"> <Details job={props.detailsJob} showApplication={props.showApplication} /> </Col>
         </Row>
       </Container>
     </>

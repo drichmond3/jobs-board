@@ -12,7 +12,7 @@ interface Props {
 
 export default function Details(props: Props) {
   let title = props.job ? props.job.title : "";
-  let description = props.job ? props.job.description : "click 'view' on a job posting to display more details...";
+  let description = props.job ? props.job.description : "click on a job posting to display more details...";
   let parentClass = props.job ? "" : " empty";
   return (
     <div>

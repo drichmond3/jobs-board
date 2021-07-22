@@ -8,6 +8,7 @@ import { getDisplayAge } from "../Utils";
 
 interface Props {
   setSelectedJob: (job: JobPosting | null) => void,
+  setSelectedDetailsJob: (job: JobPosting | null) => void,
   showApplication: () => void
 }
 
@@ -36,7 +37,7 @@ export default function JobsList(props: Props) {
 
   let jobs: JobPosting[] | null = jobPostings ? jobPostings : [];
   if (isLoadingJobs && (jobs.length === 0)) {
-    const content = Array(15).fill(null).map((job, index) => renderJob(job, index, true, props.setSelectedJob, props.showApplication));
+    const content = Array(15).fill(null).map((job, index) => renderJob(job, index, true, props.setSelectedJob, props.setSelectedDetailsJob, props.showApplication));
     content.push(<div key={-1} ref={loadIndicatorRef} className="d-none">---</div>);
     return (
       <div className="jobs-list-container">
@@ -50,15 +51,15 @@ export default function JobsList(props: Props) {
       <Alert variant="danger">Unable to find any search results. Please change your search criteria and try again.</Alert>
     )
   }
-  const content = jobs.map((job, index) => renderJob(job, index, false, props.setSelectedJob, props.showApplication));
+  const content = jobs.map((job, index) => renderJob(job, index, false, props.setSelectedJob, props.setSelectedDetailsJob, props.showApplication));
   let offset = content.length;
   if (isLoadingJobs) {
-    Array(5).fill(null).map((job, index) => renderJob(job, offset + index, true, props.setSelectedJob, () => { })).map(entry => content.push(entry));
+    Array(5).fill(null).map((job, index) => renderJob(job, offset + index, true, props.setSelectedJob, props.setSelectedDetailsJob, () => { })).map(entry => content.push(entry));
     content.push(<div key={-1} ref={loadIndicatorRef}></div>);
   }
   else if (!isEndOfJobsStream) {
     content.push(<div key={-1} ref={loadIndicatorRef}></div>);
-    Array(5).fill(null).map((job, index) => renderJob(job, offset + index, true, props.setSelectedJob, () => { })).map(entry => content.push(entry));
+    Array(5).fill(null).map((job, index) => renderJob(job, offset + index, true, props.setSelectedJob, props.setSelectedDetailsJob, () => { })).map(entry => content.push(entry));
   }
   return (
     <div className={"jobs-list-container"}>
@@ -67,7 +68,7 @@ export default function JobsList(props: Props) {
   )
 }
 
-let renderJob = (job: JobPosting | null, key: number, isLoading: boolean, selectFunc: (job: JobPosting | null) => void, showApplication: () => void): ReactElement => {
+let renderJob = (job: JobPosting | null, key: number, isLoading: boolean, selectFunc: (job: JobPosting | null) => void, selectDetailsFunc: (job: JobPosting | null) => void, showApplication: () => void): ReactElement => {
   const delayIndex = (key * 5) % 12;
   const delayClass = (key === 0) ? "" : "delay-" + delayIndex;
 
@@ -79,9 +80,15 @@ let renderJob = (job: JobPosting | null, key: number, isLoading: boolean, select
   let positionType = (job && !isLoading) ? job.job_position_types.name : <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</>
   let viewBtnText = "Apply";
   let loadingClass = isLoading ? "loading" : "";
+  const onClickApply = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    selectFunc(job);
+    showApplication();
+    e.stopPropagation();
+  };
+
   return (
     <SyntheticButton key={key} hoverClass="bg-light" clickClass="jobs-bg-clicked">
-      <Card id={"jobs-list-item" + key} className={"jobs-list-item " + loadingClass} onClick={() => selectFunc(job)}>
+      <Card id={"jobs-list-item" + key} className={"jobs-list-item " + loadingClass} onClick={(e) => selectDetailsFunc(job)}>
         {isLoading && <div className="loading-indicator"><div className={delayClass}></div></div>}
         <object className="job-img" data={imgSrc} type="image/png">{imgAlt}</object>
         <div className="jobs-list-item-primary">
@@ -91,7 +98,7 @@ let renderJob = (job: JobPosting | null, key: number, isLoading: boolean, select
         </div>
         <div className="d-none d-md-block">
           <span className="sub-data">{positionType}</span>
-          <Button className="d-none d-lg-inline" onClick={() => { selectFunc(job); showApplication() }}>{viewBtnText}</Button>
+          <Button className="d-none d-lg-inline" onClick={onClickApply}>{viewBtnText}</Button>
         </div>
       </Card>
     </SyntheticButton>

@@ -18,10 +18,13 @@ interface Props {
 
 export default function JobBoard(props: Props) {
   const [selectedJob, setSelectedJob] = useState<JobPosting | null>(null);
+  const [detailsJob, setRawDetailsJob] = useState<JobPosting | null>(null);
   const { selectedCategories, selectedPositionTypes, tmpSearchText } = useContext<ContextValue>(SearchContext);
   const [isShowApplication, setShowApplication] = useState<boolean>(false);
+  const setDetailsJob = useCallback((job: JobPosting | null) => { setSelectedJob(job); setRawDetailsJob(job) }, []);
   useEffect(() => {
     setSelectedJob(null);
+    setRawDetailsJob(null);
     setShowApplication(false);
   }, [selectedCategories, selectedPositionTypes, tmpSearchText]);
   const showApplication = useCallback(() => setShowApplication(true), []);
@@ -37,12 +40,14 @@ export default function JobBoard(props: Props) {
     }
   }
 
+
+
   const showAppClass = isShowApplication ? "application-ready" : "";
   return (
     <div className={`job-board-container ${showAppClass}`}>
       {renderHeader(Boolean(selectedJob), back)}
       <div className={containerClass}>
-        <BoardContent {...props} selectedJob={selectedJob} setSelectedJob={setSelectedJob} back={back} showApplication={showApplication} />
+        <BoardContent {...props} selectedJob={selectedJob} setSelectedJob={setSelectedJob} back={back} showApplication={showApplication} setSelectedDetailsJob={setDetailsJob} detailsJob={detailsJob} />
       </div>
     </div >
   )
