@@ -85,7 +85,7 @@ export function useLoadJobPostings(searchText: string, categories: Category[] | 
         setTimeout(() => setFetchState("FINISHED"), 1000);
       }
     }
-  }, [response.data, response.requestId, response.error, response.loading, fetchState, lastRequestId]);
+  }, [response.requestId]);
 
   //clears jobs list anytime we change our search criteria.
   useEffect(() => {
@@ -106,8 +106,9 @@ export function useLoadJobPostings(searchText: string, categories: Category[] | 
   return { data: jobs, headers: response.headers, error: response.error, loading: response.loading, forceReload: loadMoreJobs, loadMoreJobs, isEndOfStream: (fetchState === "EMPTY") }
 }
 
-export function useLoadJobPostingDetails(id: number): UseFetchResponse<JobPostingDetails[]> {
-  return useFetch<JobPostingDetails[]>(ENDPOINTS.getJobPostingDetails(id));
+export function useLoadJobPostingDetails(id: number | undefined | null): UseFetchResponse<JobPostingDetails[]> {
+  const url = id ? ENDPOINTS.getJobPostingDetails(id) : null;
+  return useFetch<JobPostingDetails[]>(url);
 }
 
 export function useLoadPositionTypes(): UseFetchResponse<PositionType[]> {
@@ -124,7 +125,7 @@ interface RawFetchResponse<T> extends UseFetchResponse<T> {
  * @param url the url to make a GET request to. A new request will be made anytime this value changes.
  * @returns the state of the most recent fetch request.
  */
-export function useFetch<T>(url: string): RawFetchResponse<T> {
+export function useFetch<T>(url: string | null): RawFetchResponse<T> {
   const requestCount = useRef<number>(0); //need a value we can modify, persists across re-renders, and doesn't cause a re-render on change to track concurrent request count.
   const [reloadFlag, setReloadFlag] = useState<boolean>(false);
   const forceReload = useCallback(() => setReloadFlag(true), []);
@@ -132,6 +133,9 @@ export function useFetch<T>(url: string): RawFetchResponse<T> {
   useEffect(() => {
     if (reloadFlag) {
       setReloadFlag(false);
+      return;
+    }
+    if (!url) {
       return;
     }
     requestCount.current++;

@@ -6,7 +6,8 @@ import { faBook } from '@fortawesome/free-solid-svg-icons'
 import { JobPosting } from "../service/JobTypes";
 
 interface Props {
-  job: JobPosting | null
+  job: JobPosting | null,
+  showApplication: () => void
 }
 
 export default function Details(props: Props) {
@@ -19,7 +20,7 @@ export default function Details(props: Props) {
         <Card>
           <Card.Title>{title && <Card.Header>{title}</Card.Header>}</Card.Title>
           <Card.Body><FontAwesomeIcon icon={faBook} size="2x" /><span> {description}</span></Card.Body>
-          {props.job && <Card.Footer className="text-center"><Button>Apply!</Button></Card.Footer>}
+          {props.job && <Card.Footer className="text-center"><Button onClick={() => props.showApplication()}>Apply!</Button></Card.Footer>}
         </Card>
       </div>
     </div>

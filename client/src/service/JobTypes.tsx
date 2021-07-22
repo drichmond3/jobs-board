@@ -9,10 +9,6 @@ export interface JobPostingDetails {
   content: string
 }
 
-export interface FullJobPosting extends JobPosting {
-  additional_details: JobPostingDetails[]
-}
-
 export interface JobPosting {
   id: number,
   title: string,
