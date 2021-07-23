@@ -106,7 +106,7 @@
     font-size: 1.25em;
     font-weight: bold;
     transition: opacity 1s;
-    opacity: 100%;
+    opacity: 1;
 }
 
 .jobs-list-item {
@@ -141,10 +141,10 @@
 
 @keyframes fadeIn {
     0% {
-        opacity: 0%
+        opacity: 0
     }
     100% {
-        opacity: 100%
+        opacity: 1
     }
 }
 
@@ -172,7 +172,7 @@
 }
 
 .loading {
-    opacity: 70%;
+    opacity: .7;
 }
 
 .job-board-container .loading-indicator {
@@ -368,7 +368,7 @@
 */
 
 .application-ready .job-selected .job-board-sub-container {
-    opacity: 0%;
+    opacity: 0;
     transition: opacity 1.5s;
 }
 
@@ -388,7 +388,7 @@
 
 @media (max-width: 991px) {
     .job-selected .job-board-sub-container {
-        opacity: 0%;
+        opacity: 0;
         transition: opacity 1.5s;
     }
     .job-board-header.job-selected>div>img {

@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/static/css/main.27345fbe.chunk.css",
+    "main.js": "/static/js/main.38507a63.chunk.js",
+    "main.js.map": "/static/js/main.38507a63.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.7545a8a1.js",
+    "runtime-main.js.map": "/static/js/runtime-main.7545a8a1.js.map",
+    "static/css/2.4be38407.chunk.css": "/static/css/2.4be38407.chunk.css",
+    "static/js/2.453703f8.chunk.js": "/static/js/2.453703f8.chunk.js",
+    "static/js/2.453703f8.chunk.js.map": "/static/js/2.453703f8.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/2.4be38407.chunk.css.map": "/static/css/2.4be38407.chunk.css.map",
+    "static/css/main.27345fbe.chunk.css.map": "/static/css/main.27345fbe.chunk.css.map",
+    "static/js/2.453703f8.chunk.js.LICENSE.txt": "/static/js/2.453703f8.chunk.js.LICENSE.txt",
+    "static/media/Logo.7e7f488c.svg": "/static/media/Logo.7e7f488c.svg",
+    "static/media/home.css": "/static/media/mock_jobs_board_background.68f78117.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.7545a8a1.js",
+    "static/css/2.4be38407.chunk.css",
+    "static/js/2.453703f8.chunk.js",
+    "static/css/main.27345fbe.chunk.css",
+    "static/js/main.38507a63.chunk.js"
+  ]
+}
