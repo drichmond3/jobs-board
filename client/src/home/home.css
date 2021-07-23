@@ -1,108 +1,102 @@
-.home-container{
-  height: 100%;
-}
-
-.home-header{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 65%;
-  background-image: url("/src/images/mock_jobs_board_background.png");
-  background-size:cover;
-  color: white;
-}
-
-@media (max-width: 992px){
-  .home-container .home-header{
+.home-container {
     height: 100%;
-  }
+}
 
-  .home-container .home-header + div button{
-    top: -6rem;
-  }
+.home-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 65%;
+    background-image: url("/src/images/mock_jobs_board_background.png");
+    background-size: cover;
+    color: white;
+}
 
-  .home-container .home-category-container{
+@media (max-width: 992px) {
+    .home-container .home-header {
+        height: 100%;
+    }
+    .home-container .home-header+div button {
+        top: -12rem;
+    }
+    .home-container .home-category-container {
+        height: 0px;
+        display: none;
+        z-index: -1;
+        pointer-events: none;
+    }
+    .home-container .home-header h1 {
+        font-size: 3rem;
+    }
+    .home-container .home-header div {
+        right: 0px;
+    }
+    .home-container .home-header p {
+        font-size: 1.2rem;
+    }
+}
+
+.home-header div {
+    position: relative;
+    text-align: center;
+    right: 10%;
+}
+
+.home-header h1 {
+    font-size: 6rem;
+}
+
+.home-header p {
+    font-size: 1.7rem;
+}
+
+.home-header+div {
+    position: absolute;
+    width: 100%;
+}
+
+.home-header+div {
     height: 0px;
-    display:none;
-    z-index:-1;
-    pointer-events: none;
-  }
-
-  .home-container .home-header h1{
-    font-size: 3rem;
-  }
-
-  .home-container .home-header div{
-    right: 0px;
-  }
-  
-  .home-container .home-header p{
-    font-size:1.2rem;
-  }
 }
 
-.home-header div{
-  position: relative;
-  text-align: center;
-  right: 10%;
+.home-header+div button {
+    position: relative;
+    font-size: 2rem;
+    line-height: 2rem;
+    text-align: center;
+    height: 4rem;
+    top: -2rem;
+    padding-left: 20px;
+    padding-right: 20px;
+    display: block;
+    margin: auto;
+    min-width: 15%;
+    background-color: #01a9af;
+    color: #dafbfc;
+    border: none;
 }
 
-.home-header h1{
-  font-size: 6rem;
+.home-header+div button:hover {
+    background-color: #03989e;
 }
 
-.home-header p{
-  font-size: 1.7rem;
+.home-category-container {
+    display: flex;
+    flex-direction: row;
+    height: 35%;
 }
 
-.home-header + div{
-  position: absolute;
-  width: 100%;
-
-}
-
-.home-header + div{
-  height:0px;
-}
-
-.home-header + div button{
-  position: relative;
-  font-size: 2rem;
-  line-height:2rem;
-  text-align: center;
-  height: 4rem;
-  top: -2rem;
-  padding-left: 20px;
-  padding-right: 20px;
-  display:block;
-  margin: auto;
-  min-width: 15%;
-  background-color: #01a9af;
-  color: #dafbfc;
-  border: none;
-}
-
-.home-header + div button:hover{
-  background-color: #03989e;
-}
-
-.home-category-container{
-  display: flex;
-  flex-direction: row;
-  height: 35%;
-}
-
-.home-category-container button{
-  display:block;
-  font-size: 2rem;
-  flex: 1;
-  margin-left: 20px;
-  margin-right: 20px;
-  margin-top: auto;
-  margin-bottom: auto;
-  height: 50%;
-  text-overflow:ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
+.home-category-container button {
+    display: block;
+    font-size: 2rem;
+    flex: 1;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: auto;
+    margin-bottom: auto;
+    height: 50%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }

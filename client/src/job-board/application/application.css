@@ -116,3 +116,9 @@
         pointer-events: visible;
     }
 }
+
+@media (max-width: 575px) {
+    .job-board-content .job-application-container {
+        padding-top: 5rem;
+    }
+}

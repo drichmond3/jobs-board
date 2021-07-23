@@ -27,11 +27,17 @@ export default function JobBoard(props: Props) {
     setRawDetailsJob(null);
     setShowApplication(false);
   }, [selectedCategories, selectedPositionTypes, tmpSearchText]);
-  const showApplication = useCallback(() => setShowApplication(true), []);
+  const showApplication = useCallback((job?: JobPosting | null) => {
+    setShowApplication(true);
+    if (job) {
+      setSelectedJob(job);
+    }
+  }, []);
 
   const containerClass = "job-board-content" + (Boolean(selectedJob) ? " job-selected" : "");
   let back = () => {
     if (Boolean(selectedJob)) {
+      setSelectedJob(null);
       setShowApplication(false);
     }
     else {

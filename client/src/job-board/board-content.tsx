@@ -19,7 +19,7 @@ interface Props {
   forcePositionTypesReload: () => void,
   setSelectedJob: (job: JobPosting | null) => void,
   setSelectedDetailsJob: (job: JobPosting | null) => void,
-  showApplication: () => void,
+  showApplication: (job?: JobPosting | null) => void,
   back: () => void
 }
 
