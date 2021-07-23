@@ -458,8 +458,10 @@
 
 @media (max-width: 991px) {
     .jobs-list-container {
-        margin-top: 9rem;
         /*Space for search bar.*/
+        margin-top: 9rem;
+        /*Space for mobile browser's navigation bar*/
+        padding-bottom: 60px;
     }
     .job-board-content::-webkit-scrollbar {
         display: none;
