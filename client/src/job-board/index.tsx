@@ -32,7 +32,6 @@ export default function JobBoard(props: Props) {
   const containerClass = "job-board-content" + (Boolean(selectedJob) ? " job-selected" : "");
   let back = () => {
     if (Boolean(selectedJob)) {
-      setSelectedJob(null);
       setShowApplication(false);
     }
     else {
