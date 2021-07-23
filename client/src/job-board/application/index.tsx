@@ -66,7 +66,7 @@ const renderContent = (props: Props, errorMessage: string | null, startApplicati
         <h3>Job Description</h3>
         <p>{props.job.description}</p>
         <ul>
-          {props.details.map(detail => <li>{detail.content}</li>)}
+          {props.details.map(detail => <li key={detail.id}>{detail.content}</li>)}
         </ul>
         <div className="job-application-footer">
           {

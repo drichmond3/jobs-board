@@ -60,9 +60,12 @@ export function useLoadJobPostings(searchText: string, categories: Category[] | 
   let [jobs, setJobs] = useState<JobPosting[] | null>(null);
   let [fetchState, setFetchState] = useState<keyof FetchingState>("FETCHING");
 
+  categories = categories && categories.length > 0 ? categories : null;
+  positionTypes = positionTypes && positionTypes.length > 0 ? positionTypes : null;
   //QUEUED -> FETCHING
   useEffect(() => {
     if (fetchState === "QUEUED") {
+      console.log("QUEUED -> FETCHING ");
       setSafeSearchCriteria((old) => {
         return { ...safeSearchCriteria, pageNumber: (old.pageNumber + 1) }
       });
@@ -73,6 +76,7 @@ export function useLoadJobPostings(searchText: string, categories: Category[] | 
   //FETCHING -> STORING adds newly loaded lobs to the list of jobs we're displaying.
   useEffect(() => {
     if (response.data && fetchState === "FETCHING" && response.requestId > lastRequestId) {
+      console.log("FETCHING -> STORING ", response.requestId);
       setFetchState("STORING");
       setJobs(j => {
         if (response.data && j) {
@@ -90,8 +94,10 @@ export function useLoadJobPostings(searchText: string, categories: Category[] | 
       //otherwise we've started another request, and we don't want to wreck the state machine by changing its state.
       if (fetchState === "STORING") {
         if ((!response.data || response.data.length === 0) && !(response.error) && (!response.loading)) {
+          console.log("STORING -> EMPTY ")
           setFetchState("EMPTY");
         } else {
+          console.log("STORING -> FINISHED ")
           setFetchState("FINISHED")
         }
       }
@@ -105,6 +111,7 @@ export function useLoadJobPostings(searchText: string, categories: Category[] | 
   let loadMoreJobs = () => {
     setFetchState((fetchState) => {
       if (fetchState === "FINISHED") {
+        console.log("FETCH MORE...FINISHED -> QUEUED");
         return "QUEUED"
       }
       return fetchState;
@@ -113,6 +120,7 @@ export function useLoadJobPostings(searchText: string, categories: Category[] | 
 
   //ANY -> FETCHING :: BREAK DATA STREAM conditions. clears jobs list anytime we change our search criteria.
   useEffect(() => {
+    console.log("FORCED FETCH! ", searchText, categories, positionTypes, resultsPerPage);
     setJobs([]);
     setSafeSearchCriteria({ pageNumber: 1, searchText, categories, positionTypes, resultsPerPage });
     setFetchState("FETCHING"); //circumvents the request 1 page at a time state machine process.
