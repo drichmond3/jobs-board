@@ -46,6 +46,7 @@ export function useLoadCategories(): UseFetchResponse<Category[]> {
 interface FetchingState {
   QUEUED: number,
   FETCHING: number,
+  STORING: number,
   FINISHED: number,
   EMPTY: number
 }
@@ -58,6 +59,8 @@ export function useLoadJobPostings(searchText: string, categories: Category[] | 
   let response = useFetch<JobPosting[]>(ENDPOINTS.getJobPostings(safeSearchCriteria.searchText, getIds(safeSearchCriteria.categories), getIds(safeSearchCriteria.positionTypes), safeSearchCriteria.pageNumber, safeSearchCriteria.resultsPerPage));
   let [jobs, setJobs] = useState<JobPosting[] | null>(null);
   let [fetchState, setFetchState] = useState<keyof FetchingState>("FETCHING");
+
+  //QUEUED -> FETCHING
   useEffect(() => {
     if (fetchState === "QUEUED") {
       setSafeSearchCriteria((old) => {
@@ -67,9 +70,10 @@ export function useLoadJobPostings(searchText: string, categories: Category[] | 
     }
   }, [fetchState, safeSearchCriteria]);
 
-  //adds newly loaded lobs to the list of jobs we're displaying.
+  //FETCHING -> STORING adds newly loaded lobs to the list of jobs we're displaying.
   useEffect(() => {
     if (response.data && fetchState === "FETCHING" && response.requestId > lastRequestId) {
+      setFetchState("STORING");
       setJobs(j => {
         if (response.data && j) {
           return [...j, ...response.data]
@@ -77,23 +81,27 @@ export function useLoadJobPostings(searchText: string, categories: Category[] | 
         return response.data;
       });
       setLastRequestId(response.requestId);
-      const isNoMoreResults = (!response.data || response.data.length === 0) && (!response.error) && (!response.loading);
-      if (isNoMoreResults) {
-        setFetchState("EMPTY");
-      }
-      else {
-        setTimeout(() => setFetchState("FINISHED"), 1000);
-      }
     }
   }, [response.requestId]);
 
-  //clears jobs list anytime we change our search criteria.
+  //STORING -> FINISHED
   useEffect(() => {
-    setJobs([]);
-    setSafeSearchCriteria({ pageNumber: 1, searchText, categories, positionTypes, resultsPerPage });
-    setFetchState("FETCHING"); //circumvents the request 1 page at a time state machine process.
-  }, [searchText, categories, positionTypes, resultsPerPage]);
+    const timerId = setTimeout(() => {
+      //otherwise we've started another request, and we don't want to wreck the state machine by changing its state.
+      if (fetchState === "STORING") {
+        if ((!response.data || response.data.length === 0) && !(response.error) && (!response.loading)) {
+          setFetchState("EMPTY");
+        } else {
+          setFetchState("FINISHED")
+        }
+      }
+    }, 1000);
+    return () => {
+      clearTimeout(timerId);
+    }
+  }, [lastRequestId, response.data, response.loading, response.error, fetchState]);
 
+  //FINISHED -> QUEUED
   let loadMoreJobs = () => {
     setFetchState((fetchState) => {
       if (fetchState === "FINISHED") {
@@ -102,6 +110,13 @@ export function useLoadJobPostings(searchText: string, categories: Category[] | 
       return fetchState;
     });
   }
+
+  //ANY -> FETCHING :: BREAK DATA STREAM conditions. clears jobs list anytime we change our search criteria.
+  useEffect(() => {
+    setJobs([]);
+    setSafeSearchCriteria({ pageNumber: 1, searchText, categories, positionTypes, resultsPerPage });
+    setFetchState("FETCHING"); //circumvents the request 1 page at a time state machine process.
+  }, [searchText, categories, positionTypes, resultsPerPage]);
 
   return { data: jobs, headers: response.headers, error: response.error, loading: response.loading, forceReload: loadMoreJobs, loadMoreJobs, isEndOfStream: (fetchState === "EMPTY") }
 }
