@@ -78,6 +78,10 @@ let renderJob = (job: JobPosting | null, key: number, isLoading: boolean, select
   let company = (job && !isLoading) ? job.company : <>&nbsp;</>;
   let age = (job && !isLoading) ? getDisplayAge(job.age_in_hours) : <>&nbsp;</>;
   let positionType = (job && !isLoading) ? job.job_position_types.name : <>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</>
+  let description = (job && !isLoading) ? job.description : ""
+  if (description.length > 150) {
+    description = description.substr(0, 150) + " ...";
+  }
   let viewBtnText = "Apply";
   let loadingClass = isLoading ? "loading" : "";
   const onClickApply = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
@@ -95,6 +99,7 @@ let renderJob = (job: JobPosting | null, key: number, isLoading: boolean, select
           <span className="title"><span>{title}</span></span>
           <span className="sub-data"><span>{company}</span></span>
           <span className="sub-data"><span>{age}</span></span>
+          <span className="sub-data jobs-list-item-description"><span>{description}</span></span>
         </div>
         <div className="d-none d-md-block">
           <span className="sub-data">{positionType}</span>

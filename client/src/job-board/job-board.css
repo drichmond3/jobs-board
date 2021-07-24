@@ -82,7 +82,7 @@
 
 .jobs-list-item>.jobs-list-item-primary {
     flex: 1;
-    padding-left: 30px;
+    padding-left: 15px;
 }
 
 .jobs-list-item>.jobs-list-item-primary+div {
@@ -94,8 +94,10 @@
 }
 
 .jobs-list-item .job-img {
-    height: 80px;
-    width: 80px;
+    height: 40px;
+    width: 40px;
+    margin-top: 5px;
+    margin-left: 15px;
     border-radius: 50%;
     border: 2px solid #333333;
     animation: fadeIn 1.0s ease-in;
@@ -103,7 +105,7 @@
 
 .jobs-list-item .title {
     display: block;
-    font-size: 1.25em;
+    font-size: 1.15em;
     font-weight: bold;
     transition: opacity 1s;
     opacity: 1;
@@ -119,6 +121,11 @@
     font-size: 1em;
     color: #545454;
     transition: color 1.0s;
+}
+
+.jobs-list-item .sub-data.jobs-list-item-description {
+    font-size: .85em;
+    color: #212529;
 }
 
 .jobs-list-item button {
@@ -362,6 +369,11 @@
     padding-left: 5px;
 }
 
+.jobs-list-container {
+    max-width: 800px;
+    margin: auto;
+}
+
 
 /*
 * Displaying Job Application Screen CSS
@@ -483,6 +495,9 @@
         padding-bottom: 0px;
         border-bottom: 0px;
         position: relative;
+    }
+    .job-board-search-content>div {
+        background-color: #fbfbfb;
     }
     .job-board-search-content .search-info {
         padding: 0px;
