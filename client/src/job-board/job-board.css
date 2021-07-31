@@ -398,7 +398,12 @@
     background-color: white;
 }
 
-@media (max-width: 991px) {
+
+/*
+* Mobile & Tablet
+*/
+
+@media (max-width: 991px) and (min-height: 400px) {
     .job-selected .job-board-sub-container {
         opacity: 0;
         transition: opacity 1.5s;
@@ -415,60 +420,6 @@
         top: 50%;
         background-color: white;
     }
-}
-
-
-/*
-* Other media queries
-*/
-
-@media (min-width: 576px) and (max-width: 991px) {
-    .d-sm-inline {
-        display: inline-block !important;
-    }
-    .job-board-search-content input {
-        padding-right: 6rem;
-    }
-}
-
-@media (min-width: 992px) {
-    .d-lg-inline {
-        display: inline-block !important;
-        /*yes we all hate important!, but this is to overwrite an important bootstrap put in there. Whatcha gonna do, fisty-cuff with bootstrap?*/
-    }
-    .job-board-search-container .job-board-search-content {
-        height: 70vh;
-        width: 20vw;
-        /*Column is setup with bootstrap to take up 25% of width, inside of a container that takes up 80% screen width. 80 * 0.25=20*/
-    }
-}
-
-@media (max-width: 575px) {
-    .job-board-container .job-board-header {
-        height: 2rem;
-        border: none;
-    }
-    .job-board-container .job-board-header>div {
-        padding-left: 0px;
-    }
-    .job-board-container .job-board-header img {
-        display: none;
-    }
-    .job-board-container .job-board-header h1 {
-        font-size: 1.5rem;
-    }
-    .job-board-container .job-board-header .job-board-header-text {
-        margin: auto;
-        padding: 0px;
-        border-left-width: 4px;
-        border-left-style: solid;
-    }
-    .job-board-container .job-board-content {
-        margin-top: 0px;
-    }
-}
-
-@media (max-width: 991px) {
     .jobs-list-container {
         /*Space for search bar.*/
         margin-top: 9rem;
@@ -517,5 +468,132 @@
         top: -.4rem;
         /* move search info up by half the fontsize to center*/
         padding-right: 10px;
+    }
+}
+
+
+/*
+* Tablet only
+*/
+
+@media (min-width: 576px) and (max-width: 991px) {
+    .d-sm-inline {
+        display: inline-block !important;
+    }
+    .job-board-search-content input {
+        padding-right: 6rem;
+    }
+}
+
+
+/*
+* Desktop only
+*/
+
+@media (min-width: 992px) {
+    .d-lg-inline {
+        display: inline-block !important;
+        /*yes we all hate important!, but this is to overwrite an important bootstrap put in there. Whatcha gonna do, fisty-cuff with bootstrap?*/
+    }
+    .job-board-search-container .job-board-search-content {
+        height: 70vh;
+        width: 20vw;
+        /*Column is setup with bootstrap to take up 25% of width, inside of a container that takes up 80% screen width. 80 * 0.25=20*/
+    }
+}
+
+
+/*
+* Mobile Only
+*/
+
+@media (max-width: 575px) {
+    .job-board-container .job-board-header {
+        height: 2rem;
+        border: none;
+    }
+    .job-board-container .job-board-header>div {
+        padding-left: 0px;
+    }
+    .job-board-container .job-board-header img {
+        display: none;
+    }
+    .job-board-container .job-board-header h1 {
+        font-size: 1.5rem;
+    }
+    .job-board-container .job-board-header .job-board-header-text {
+        margin: auto;
+        padding: 0px;
+        border-left-width: 4px;
+        border-left-style: solid;
+    }
+    .job-board-container .job-board-content {
+        margin-top: 0px;
+    }
+}
+
+
+/*
+* Mobile Landscape
+*/
+
+@media (max-height: 400px) and (max-width: 991px) {
+    .job-board-container .job-board-header {
+        height: 2rem;
+        border: none;
+    }
+    .job-board-container .job-board-header>div {
+        padding-left: 0px;
+    }
+    .job-board-container .job-board-header img {
+        display: none !important;
+    }
+    .job-board-container .job-board-header h1 {
+        font-size: 1.5rem;
+    }
+    .job-board-container .job-board-header .job-board-header-text {
+        margin: auto;
+        padding: 0px;
+        border-left-width: 4px;
+        border-left-style: solid;
+    }
+    body .job-board-search-content input {
+        padding-right: 0px;
+    }
+    .job-board-container .job-board-content {
+        margin-top: 0px;
+    }
+    .job-board-search-container .job-board-search-content {
+        height: 70vh;
+        width: 30vw;
+        /*Column is setup with bootstrap to take up 25% of width, inside of a container that takes up 80% screen width. 80 * 0.25=20*/
+    }
+    .jobs-list-container-parent {
+        flex: 1;
+        margin-left: 30vw;
+    }
+    #job-board-category-dropdown {
+        width: 100%;
+    }
+    #job-board-tag-dropdown {
+        width: 100%;
+    }
+    /*****DELETE******/
+    /****DELETE*****/
+    .job-selected .job-board-sub-container {
+        opacity: 0;
+        transition: opacity 1.5s;
+    }
+    .job-board-header.job-selected>div>img {
+        border-color: black;
+        transition: border-color 1s, top 1s, background-color .4s;
+        top: 50%;
+        background-color: white;
+    }
+    .job-board-header.job-selected>div>div {
+        border-color: black;
+        transition: border-color 1s, top 1s, background-color .4s;
+        top: 50%;
+        background-color: white;
     }
 }

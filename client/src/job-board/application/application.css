@@ -25,12 +25,6 @@
     padding-bottom: 2rem;
 }
 
-@media(max-width: 991px) {
-    .job-application-container .job-application-header {
-        width: 100%;
-    }
-}
-
 .job-application-header h2 {
     font-size: 1.7rem;
 }
@@ -110,6 +104,9 @@
 }
 
 @media (max-width: 991px) {
+    .job-application-container .job-application-header {
+        width: 100%;
+    }
     .job-selected .job-application-container {
         opacity: 1;
         transition: opacity 1.5s;
@@ -119,6 +116,12 @@
 }
 
 @media (max-width: 575px) {
+    .job-board-content .job-application-container {
+        padding-top: 5rem;
+    }
+}
+
+@media (max-height: 400px) and (max-width: 991px) {
     .job-board-content .job-application-container {
         padding-top: 5rem;
     }

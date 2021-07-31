@@ -32,7 +32,7 @@ export default function BoardContent(props: Props) {
       <Application job={props.selectedJob} details={isDetailsLoading ? null : additionalDetails} back={props.back} isLoading={isDetailsLoading} />
       <Container fluid className={containerClass}>
         <Row>
-          <Col lg="3" xs="12" className="h-100 p-0">
+          <Col lg="3" xs="12" className="h-100 p-0 search-criteria">
             <SearchCriteria
               categories={props.categories}
               positionTypes={props.positionTypes}
@@ -42,7 +42,7 @@ export default function BoardContent(props: Props) {
               forcePositionTypesReload={props.forcePositionTypesReload}
             />
           </Col>
-          <Col lg="6" xs="12"> <JobsList setSelectedJob={props.setSelectedJob} showApplication={props.showApplication} setSelectedDetailsJob={props.setSelectedDetailsJob} /> </Col>
+          <Col lg="6" xs="12" className="jobs-list-container-parent"> <JobsList setSelectedJob={props.setSelectedJob} showApplication={props.showApplication} setSelectedDetailsJob={props.setSelectedDetailsJob} /> </Col>
           <Col lg="3" className="d-none d-lg-block h-100 p-0"> <Details job={props.detailsJob} showApplication={props.showApplication} /> </Col>
         </Row>
       </Container>
